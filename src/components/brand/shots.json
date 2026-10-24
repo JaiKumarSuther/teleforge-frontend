@@ -1,0 +1,22 @@
+{
+  "conversations": {
+    "w": 2208,
+    "h": 1920
+  },
+  "phone-chat": {
+    "w": 780,
+    "h": 1362
+  },
+  "overview": {
+    "w": 2464,
+    "h": 1640
+  },
+  "activity": {
+    "w": 2188,
+    "h": 1120
+  },
+  "overview-phone": {
+    "w": 780,
+    "h": 1688
+  }
+}
