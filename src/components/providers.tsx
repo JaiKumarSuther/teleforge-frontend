@@ -32,7 +32,7 @@ function ThemedToaster() {
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const tree = (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
       <IconContext.Provider value={{ size: 16, weight: "regular" }}>
         <SWRConfig
           value={{

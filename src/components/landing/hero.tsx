@@ -1,44 +1,70 @@
-import { Shot } from "@/components/brand/shot";
+import { ArrowRight, CheckCircle } from "@phosphor-icons/react/dist/ssr";
 import { CreateBotButton } from "./auth-cta";
+import { HeroDemo } from "./hero-demo";
 
 export function Hero() {
   return (
-    <section aria-labelledby="hero-title" className="relative overflow-x-clip">
-      <div className="mx-auto grid grid-cols-[minmax(0,1fr)] max-w-[1200px] items-center gap-12 px-5 pt-12 pb-16 sm:px-8 sm:pt-16 lg:min-h-[calc(100dvh-4rem)] lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-14 lg:py-16">
-        <div className="max-w-xl">
-          {/* Sized on wide screens so "Give /newbot" stays on one line instead of leaving "Give" alone */}
-          <h1 id="hero-title" className="type-display text-text lg:text-[min(4.6rem,calc(1rem+4.4vw))]">
-            Give /newbot a personality.
-          </h1>
-          <p className="mt-6 max-w-[36ch] text-lg text-text-2">
-            Write how your Telegram bot should talk. TeleForge answers every message in that voice with Google Gemini, and keeps each chat on your dashboard.
-          </p>
-          <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
-            <CreateBotButton />
-            <a href="#how" className="text-md font-medium text-text underline decoration-line-2 underline-offset-4 transition-[text-decoration-color] duration-150 hover:decoration-text">
-              See how it works
-            </a>
-          </div>
-          <p className="mt-8 text-sm text-text-2">Runs on Gemini&apos;s free tier. No server, webhook or code to set up.</p>
+    <section aria-labelledby="hero-title" className="relative overflow-hidden pt-8 pb-16 sm:pt-12 sm:pb-24">
+      {/* Ambient background glow */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 -top-20 -z-10 flex justify-center overflow-hidden blur-3xl opacity-35 dark:opacity-20"
+      >
+        <div className="h-[26rem] w-[50rem] rounded-full bg-gradient-to-tr from-accent via-[#229ed9] to-accent" />
+      </div>
+
+      <div className="mx-auto flex max-w-[1200px] flex-col items-center px-5 text-center sm:px-8">
+        {/* Top badge */}
+        <div className="inline-flex items-center gap-2 rounded-full border border-line-2 bg-surface/80 px-3.5 py-1 text-xs font-medium text-text-2 shadow-xs backdrop-blur-md">
+          <span className="size-2 rounded-full bg-ok animate-pulse" />
+          <span>Powered by Google Gemini 2.5 Flash</span>
+          <span className="text-text-3 font-normal">|</span>
+          <span className="font-semibold text-accent">Zero Server Setup</span>
         </div>
 
-        {/* Desktop: the real bot page, bleeding off the right edge. Phones: the real phone view. */}
-        <figure className="relative lg:-mr-[max(2rem,calc((100vw-1200px)/2+2rem))]">
-          <Shot
-            name="conversations"
-            priority
-            alt="A TeleForge bot page. ShopHelper is running; today's stats sit above a Telegram conversation it answered in its support persona."
-            className="hidden rounded-xl shadow-frame lg:block lg:rounded-r-none"
-            sizes="(min-width: 1024px) 760px, 0px"
-          />
-          <Shot
-            name="phone-chat"
-            priority
-            alt="The same conversation on a phone: a customer's question and the bot's reply."
-            className="mx-auto max-w-[22rem] rounded-xl shadow-frame lg:hidden"
-            sizes="(max-width: 1023px) 352px, 0px"
-          />
-        </figure>
+        {/* Display title */}
+        <h1
+          id="hero-title"
+          className="mt-5 max-w-4xl type-display text-text tracking-tight lg:text-[min(4.4rem,calc(1.3rem+4.2vw))]"
+        >
+          Give <span className="font-mono text-brand">/newbot</span> a personality.
+        </h1>
+
+        {/* Subtitle */}
+        <p className="mt-4 max-w-2xl text-base text-text-2 leading-relaxed sm:text-lg">
+          Write how your Telegram bot should talk. TeleForge answers every message in that voice with Google Gemini, and keeps each chat synced live to your dashboard.
+        </p>
+
+        {/* CTA Buttons */}
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-3.5">
+          <CreateBotButton size="lg" />
+          <a
+            href="#how"
+            className="inline-flex h-11 items-center justify-center gap-1.5 rounded-md border border-line-2 bg-surface px-5 text-md font-medium text-text shadow-xs transition hover:bg-bg-hover hover:border-line"
+          >
+            <span>See how it works</span>
+            <ArrowRight size={16} />
+          </a>
+        </div>
+
+        {/* Feature highlights */}
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-7 gap-y-2.5 text-xs text-text-2 sm:text-sm">
+          <div className="flex items-center gap-1.5">
+            <CheckCircle size={15} weight="fill" className="text-ok" />
+            <span>Free Gemini 2.5 tier</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <CheckCircle size={15} weight="fill" className="text-ok" />
+            <span>No server or webhook needed</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <CheckCircle size={15} weight="fill" className="text-ok" />
+            <span>Connects Telegram in 60s</span>
+          </div>
+        </div>
+
+        {/* Interactive Telegram bot demonstration */}
+        <HeroDemo />
       </div>
     </section>
   );

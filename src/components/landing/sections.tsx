@@ -1,5 +1,15 @@
 import Link from "next/link";
-import { EyeSlash, Key } from "@phosphor-icons/react/dist/ssr";
+import {
+  EyeSlash,
+  Key,
+  PaperPlaneTilt,
+  Sparkle,
+  ClockCounterClockwise,
+  CheckCircle,
+  ChatCircleText,
+  Lock,
+  ArrowRight,
+} from "@phosphor-icons/react/dist/ssr";
 import { Lockup } from "@/components/brand/logo";
 import { Shot } from "@/components/brand/shot";
 import { ChatBubble } from "@/components/app/chat";
@@ -7,8 +17,9 @@ import { buttonClass } from "@/components/ui/button";
 import { BotAvatar, StatusBadge } from "@/components/ui/misc";
 import { PERSONA_TEMPLATES } from "@/lib/persona-templates";
 import { cn } from "@/lib/utils";
-import { CreateBotButton } from "./auth-cta";
+import { CreateBotButton, FooterAuthLink, SignInLink } from "./auth-cta";
 import { PersonaSwitcher } from "./persona-switcher";
+import { FaqAccordion } from "./faq-accordion";
 
 function Container({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <div className={`mx-auto w-full max-w-[1200px] px-5 sm:px-8 ${className}`}>{children}</div>;
@@ -18,17 +29,23 @@ function Container({ children, className = "" }: { children: React.ReactNode; cl
 
 export function Personas() {
   return (
-    <section id="personas" aria-labelledby="personas-title" className="scroll-mt-16 bg-bg-2 py-24 sm:py-32">
+    <section id="personas" aria-labelledby="personas-title" className="scroll-mt-16 bg-bg-2 py-20 sm:py-28">
       <Container>
         <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end lg:gap-16">
-          <h2 id="personas-title" className="type-section max-w-[14ch] text-text">
-            Same question, four different bots.
-          </h2>
-          <p className="max-w-[46ch] text-lg text-text-2 lg:justify-self-end">
-            A persona is a few sentences you write. Change it, and the same bot answers like a support agent, a tutor or a restaurant host.
+          <div>
+            <div className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-accent mb-2">
+              <Sparkle size={14} weight="fill" />
+              <span>Prompt Engine</span>
+            </div>
+            <h2 id="personas-title" className="type-section text-text">
+              Same question, <span className="text-brand">four different bots.</span>
+            </h2>
+          </div>
+          <p className="max-w-[46ch] text-base text-text-2 lg:justify-self-end sm:text-lg">
+            A persona is a few sentences you write. Change it, and the same bot immediately answers like a customer support agent, a tutor or a restaurant host.
           </p>
         </div>
-        <div className="mt-12 sm:mt-16">
+        <div className="mt-10 sm:mt-14">
           <PersonaSwitcher />
         </div>
       </Container>
@@ -37,9 +54,6 @@ export function Personas() {
 }
 
 /* ── How it works: three steps, each drawn with the app's own parts ───── */
-
-// Built from the same components as the app, at real size, so they stay sharp and readable in
-// both themes. Each one is a picture (role="img" with a description), not a working control.
 
 const DEMO_TOKEN = "7412583690:AAFq3k8L2xV9c";
 
@@ -53,7 +67,7 @@ function BotFatherChat() {
           <div className="text-caption text-text-2">bot</div>
         </div>
       </div>
-      <div aria-hidden className="flex flex-1 flex-col justify-end gap-1.5 p-4">
+      <div aria-hidden className="flex flex-1 flex-col justify-end gap-1.5 p-4 text-xs">
         <ChatBubble compact side="out">
           /newbot
         </ChatBubble>
@@ -76,7 +90,7 @@ const fakeField = "rounded-md border border-line-input bg-surface text-label tex
 function SetupForm() {
   const persona = PERSONA_TEMPLATES[0].prompt;
   return (
-    <div role="img" aria-label="The New bot form with the BotFather token pasted in and a customer support persona written." className="flex h-full flex-col gap-4 p-4">
+    <div role="img" aria-label="The New bot form with the BotFather token pasted in and a customer support persona written." className="flex h-full flex-col gap-4 p-4 text-xs">
       <div aria-hidden className="space-y-2">
         <div className="text-label font-medium text-text">BotFather token</div>
         <div className={cn(fakeField, "flex h-9 items-center gap-2 px-3 font-mono")}>
@@ -100,7 +114,7 @@ function SetupForm() {
 
 function RunningBot() {
   return (
-    <div role="img" aria-label="Threadline Support is running and has answered a customer who asked whether the shop ships to Lahore." className="flex h-full flex-col">
+    <div role="img" aria-label="Threadline Support is running and has answered a customer who asked whether the shop ships to Lahore." className="flex h-full flex-col text-xs">
       <div aria-hidden className="flex items-center gap-3 border-b border-line bg-surface px-4 py-3">
         <BotAvatar name="Threadline Support" seed="6adba520ef3c7ceee4715be7" size={32} />
         <div className="min-w-0 flex-1">
@@ -123,16 +137,19 @@ function RunningBot() {
 
 const STEPS = [
   {
+    step: "01",
     title: "Make the bot in Telegram",
     body: "Message @BotFather, send /newbot, pick a name, and copy the token it gives you.",
     visual: <BotFatherChat />,
   },
   {
+    step: "02",
     title: "Paste the token, write the persona",
     body: "Start from a template or write your own, then chat with it until the replies sound right.",
     visual: <SetupForm />,
   },
   {
+    step: "03",
     title: "Start it",
     body: "TeleForge starts polling Telegram right away. Message your bot and the chat appears on its page.",
     visual: <RunningBot />,
@@ -141,22 +158,39 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section id="how" aria-labelledby="how-title" className="scroll-mt-16 py-24 sm:py-32">
+    <section id="how" aria-labelledby="how-title" className="scroll-mt-16 py-20 sm:py-28">
       <Container>
-        <h2 id="how-title" className="type-section max-w-[18ch] text-text">
-          From BotFather to the first reply in a minute.
-        </h2>
-        <ol className="mt-14 grid grid-cols-[minmax(0,1fr)] gap-12 sm:mt-16 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-0">
-          {STEPS.map((s, i) => (
-            <li key={s.title} className="grid grid-rows-[auto_auto_1fr] lg:row-span-3 lg:grid-rows-subgrid">
-              <div className="flex items-baseline gap-3">
-                <span aria-hidden className="text-sm font-medium text-text-2">
-                  {i + 1}
-                </span>
-                <h3 className="type-title text-text">{s.title}</h3>
+        <div className="text-center max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-accent mb-2">
+            <span>Fast Setup</span>
+          </div>
+          <h2 id="how-title" className="type-section text-text">
+            From BotFather to the first reply in a minute.
+          </h2>
+          <p className="mt-3 text-base text-text-2 sm:text-lg">
+            No server code, webhook configurations, or cloud infrastructure needed. Just 3 simple steps.
+          </p>
+        </div>
+
+        <ol className="mt-14 grid grid-cols-[minmax(0,1fr)] gap-8 sm:mt-16 lg:grid-cols-3">
+          {STEPS.map((s) => (
+            <li
+              key={s.title}
+              className="flex flex-col justify-between rounded-2xl border border-line-2 bg-surface p-6 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="flex size-9 items-center justify-center rounded-lg bg-accent-tint font-mono text-sm font-bold text-accent ring-1 ring-accent-line ring-inset">
+                    {s.step}
+                  </span>
+                  <span className="text-caption text-text-3 font-mono">Step {s.step}</span>
+                </div>
+                <h3 className="mt-4 text-base font-semibold text-text">{s.title}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-text-2">{s.body}</p>
               </div>
-              <p className="mt-2 max-w-[38ch] pl-6 text-md text-text-2">{s.body}</p>
-              <div className="mt-6 min-h-56 overflow-hidden rounded-lg bg-surface shadow-frame">{s.visual}</div>
+              <div className="mt-6 min-h-56 overflow-hidden rounded-xl border border-line bg-surface shadow-xs">
+                {s.visual}
+              </div>
             </li>
           ))}
         </ol>
@@ -169,50 +203,90 @@ export function HowItWorks() {
 
 export function Showcase() {
   return (
-    <section aria-labelledby="showcase-title" className="pb-24 sm:pb-32">
+    <section id="showcase" aria-labelledby="showcase-title" className="scroll-mt-16 pb-20 sm:pb-28">
       <Container>
         <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end lg:gap-16">
-          <h2 id="showcase-title" className="type-section max-w-[14ch] text-text">
-            Every bot, every chat, one page.
-          </h2>
-          <p className="max-w-[46ch] text-lg text-text-2 lg:justify-self-end">
+          <div>
+            <div className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-accent mb-2">
+              <span>Management Hub</span>
+            </div>
+            <h2 id="showcase-title" className="type-section text-text">
+              Every bot, every chat, <span className="text-brand">one page.</span>
+            </h2>
+          </div>
+          <p className="max-w-[46ch] text-base text-text-2 lg:justify-self-end sm:text-lg">
             See which bots are running, what people asked today and what each bot answered. Errors, like a revoked token, show up before your users notice.
           </p>
         </div>
-        {/* Phones get the phone capture: the desktop one would be too small to read. */}
-        <figure className="mt-12 sm:mt-16">
-          <Shot
-            name="overview-phone"
-            alt="The TeleForge overview on a phone: a notice that one bot stopped with an error, then today's messages, replies and people."
-            className="mx-auto max-w-[22rem] rounded-xl shadow-frame sm:hidden"
-            sizes="(max-width: 639px) 352px, 0px"
+
+        {/* Browser Mockup Wrapper for Overview */}
+        <div className="relative mt-12 sm:mt-16">
+          {/* Ambient glow behind overview */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -inset-3 -z-10 rounded-3xl bg-gradient-to-r from-accent/20 via-brand/20 to-accent/20 blur-2xl opacity-50"
           />
-          <Shot
-            name="overview"
-            alt="The TeleForge overview: messages today with a seven-day chart, replies, people and monthly totals above a table of bots with their status and last message."
-            className="hidden rounded-xl shadow-frame sm:block"
-            sizes="(min-width: 1200px) 1136px, (min-width: 640px) 100vw, 0px"
-          />
-        </figure>
-        <div className="mt-6 hidden grid-cols-[minmax(0,1fr)] gap-6 sm:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-          <figure className="flex flex-col">
+
+          <figure className="overflow-hidden rounded-2xl border border-line-2 bg-surface shadow-2xl">
+            {/* Browser Chrome Header */}
+            <div className="flex items-center justify-between border-b border-line bg-bg-2 px-4 py-2.5 sm:px-5">
+              <div className="flex items-center gap-2">
+                <span className="size-2.5 rounded-full bg-danger/80" />
+                <span className="size-2.5 rounded-full bg-warn/80" />
+                <span className="size-2.5 rounded-full bg-ok/80" />
+              </div>
+              <div className="flex items-center gap-2 rounded-md border border-line bg-surface/90 px-3 py-1 text-xs text-text-2 shadow-xs">
+                <Lock size={12} className="text-ok" />
+                <span className="font-mono text-text-3">https://teleforge.dev/dashboard/overview</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-ok font-medium">
+                <span className="size-1.5 rounded-full bg-ok animate-pulse" />
+                <span className="hidden sm:inline">Live Stream Active</span>
+              </div>
+            </div>
+
+            {/* Screenshots */}
+            <Shot
+              name="overview-phone"
+              alt="The TeleForge overview on a phone: a notice that one bot stopped with an error, then today's messages, replies and people."
+              className="mx-auto max-w-[22rem] sm:hidden"
+              sizes="(max-width: 639px) 352px, 0px"
+            />
+            <Shot
+              name="overview"
+              alt="The TeleForge overview: messages today with a seven-day chart, replies, people and monthly totals above a table of bots with their status and last message."
+              className="hidden sm:block"
+              sizes="(min-width: 1200px) 1136px, (min-width: 640px) 100vw, 0px"
+            />
+          </figure>
+        </div>
+
+        {/* 2-Card details below */}
+        <div className="mt-8 hidden grid-cols-[minmax(0,1fr)] gap-6 sm:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+          <figure className="flex flex-col rounded-2xl border border-line-2 bg-surface p-4 shadow-sm">
             <Shot
               name="activity"
               alt="A bot's activity log: messages, replies and a restart, each with its time."
-              className="flex-1 rounded-xl shadow-frame [&_img]:h-full [&_img]:object-cover [&_img]:object-left-top"
+              className="flex-1 rounded-xl shadow-xs overflow-hidden [&_img]:h-full [&_img]:object-cover [&_img]:object-left-top"
               sizes="(min-width: 1024px) 760px, 100vw"
             />
-            <figcaption className="mt-3 text-sm text-text-2">The activity log keeps 30 days of messages, replies, starts, stops and errors.</figcaption>
+            <figcaption className="mt-3.5 flex items-center justify-between text-xs text-text-2">
+              <span>The activity log stores 30 days of messages, replies, starts, stops and errors.</span>
+              <span className="font-mono text-accent font-semibold">30-Day Audit</span>
+            </figcaption>
           </figure>
-          {/* Below lg the hero already shows this capture. */}
-          <figure className="hidden flex-col lg:flex">
+
+          <figure className="hidden flex-col rounded-2xl border border-line-2 bg-surface p-4 shadow-sm lg:flex">
             <Shot
               name="phone-chat"
               alt="A conversation on a phone-sized screen."
-              className="w-full rounded-xl shadow-frame"
+              className="w-full rounded-xl shadow-xs overflow-hidden"
               sizes="(min-width: 1024px) 370px, 0px"
             />
-            <figcaption className="mt-3 text-sm text-text-2">Works the same on your phone.</figcaption>
+            <figcaption className="mt-3.5 flex items-center justify-between text-xs text-text-2">
+              <span>Inspect conversations on your mobile phone.</span>
+              <span className="font-mono text-ok font-semibold">Mobile Ready</span>
+            </figcaption>
           </figure>
         </div>
       </Container>
@@ -223,36 +297,87 @@ export function Showcase() {
 /* ── Runtime: the five events every message goes through ──────────────── */
 
 const EVENTS = [
-  { where: "Telegram API", id: "getUpdates", title: "Telegram hands over the message", body: "Each bot keeps a long poll open to Telegram, so new messages arrive without a webhook or a public URL." },
-  { where: "Activity log", id: "message_in", title: "It's saved with its sender", body: "The message is stored with the sender's name and paired with that chat's last 10 exchanges." },
-  { where: "Gemini API", id: "generateContent", title: "Gemini writes the reply", body: "Your persona, the recent history and the new message go to Gemini (2.5 Flash by default) with safety filters on." },
-  { where: "Telegram API", id: "sendMessage", title: "The reply goes back to the chat", body: "Usually a second or two after the message arrived. If Gemini is busy, the bot sends a short apology instead of going quiet." },
-  { where: "Activity log", id: "message_out", title: "Both sides are on your dashboard", body: "The reply is saved too, so the whole conversation shows up on the bot's page." },
+  {
+    step: "1",
+    where: "Telegram API",
+    id: "getUpdates",
+    icon: <PaperPlaneTilt size={16} weight="fill" className="text-[#229ed9]" />,
+    title: "Telegram hands over the message",
+    body: "Each bot keeps a long poll open to Telegram, so new messages arrive immediately without configuring a webhook or exposing a public URL.",
+  },
+  {
+    step: "2",
+    where: "Activity log",
+    id: "message_in",
+    icon: <ClockCounterClockwise size={16} weight="bold" className="text-accent" />,
+    title: "It's saved with its sender",
+    body: "The incoming message is securely stored with the sender's username and paired with that chat's last 10 exchanges for conversational context.",
+  },
+  {
+    step: "3",
+    where: "Gemini API",
+    id: "generateContent",
+    icon: <Sparkle size={16} weight="fill" className="text-amber-500" />,
+    title: "Gemini writes the reply",
+    body: "Your bot persona prompt, the recent conversation history, and the new message are sent to Google Gemini 2.5 Flash with safety filters active.",
+  },
+  {
+    step: "4",
+    where: "Telegram API",
+    id: "sendMessage",
+    icon: <PaperPlaneTilt size={16} weight="bold" className="text-[#229ed9]" />,
+    title: "The reply goes back to the chat",
+    body: "Sent back to Telegram usually within 1 to 2 seconds. If Gemini is ever rate-limited, the bot sends a courteous apology instead of going silent.",
+  },
+  {
+    step: "5",
+    where: "Live Dashboard",
+    id: "message_out",
+    icon: <CheckCircle size={16} weight="fill" className="text-ok" />,
+    title: "Both sides stream to your dashboard",
+    body: "The reply is logged in real-time, allowing you to monitor active chats, message volume, and bot health directly from your control panel.",
+  },
 ];
 
 export function Runtime() {
   return (
-    <section aria-labelledby="runtime-title" className="border-t border-line bg-bg-2 py-24 sm:py-32">
+    <section id="runtime" aria-labelledby="runtime-title" className="scroll-mt-16 border-t border-line bg-bg-2 py-20 sm:py-28">
       <Container className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
         <div className="lg:sticky lg:top-28 lg:self-start">
-          <h2 id="runtime-title" className="type-section max-w-[12ch] text-text">
+          <div className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-accent mb-2">
+            <span>Pipeline Architecture</span>
+          </div>
+          <h2 id="runtime-title" className="type-section text-text">
             What happens to a message.
           </h2>
-          <p className="mt-5 max-w-[40ch] text-lg text-text-2">Every message takes the same five steps. The two marked Activity log are saved, so you can read them on the bot&apos;s page.</p>
+          <p className="mt-4 max-w-[40ch] text-base text-text-2 leading-relaxed sm:text-lg">
+            Every incoming Telegram message flows through five deterministic steps. Zero webhooks, zero server maintenance.
+          </p>
         </div>
-        <ol className="divide-y divide-line border-y border-line">
-          {EVENTS.map((e, i) => (
-            <li key={e.id} className="grid grid-cols-[minmax(0,1fr)] gap-x-6 gap-y-2 py-7 sm:grid-cols-[2.5rem_minmax(0,1fr)]">
-              <span aria-hidden className="text-sm font-medium text-text-2 sm:pt-1">
-                {i + 1}
-              </span>
-              <div>
-                <h3 className="type-title text-text">{e.title}</h3>
-                <p className="mt-1.5 max-w-[56ch] text-md text-text-2">{e.body}</p>
-                <p className="mt-3 flex flex-wrap items-center gap-2 text-label text-text-2">
-                  <span className={e.where === "Activity log" ? "font-medium text-accent-text" : undefined}>{e.where}</span>
-                  <code className="rounded-xs bg-bg-3 px-1.5 py-0.5 text-label text-text">{e.id}</code>
-                </p>
+
+        {/* Pipeline Process Flow */}
+        <ol className="space-y-4">
+          {EVENTS.map((e) => (
+            <li
+              key={e.id}
+              className="group relative rounded-xl border border-line bg-surface p-5 shadow-xs transition-all duration-200 hover:border-line-2 hover:shadow-md"
+            >
+              <div className="flex items-start gap-4">
+                <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-bg-2 ring-1 ring-line">
+                  {e.icon}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h3 className="text-base font-semibold text-text">{e.title}</h3>
+                    <div className="flex items-center gap-2">
+                      <span className="text-caption font-medium text-text-2">{e.where}</span>
+                      <code className="rounded-xs bg-bg-2 px-1.5 py-0.5 font-mono text-[11px] text-text-3">
+                        {e.id}
+                      </code>
+                    </div>
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-text-2">{e.body}</p>
+                </div>
               </div>
             </li>
           ))}
@@ -262,90 +387,149 @@ export function Runtime() {
   );
 }
 
-/* ── FAQ: plain rows, no accordions ───────────────────────────────────── */
-
-const FAQS = [
-  { q: "Do I need to write any code?", a: "No. You need a Telegram account to create the bot with @BotFather, and a few sentences describing how it should behave." },
-  { q: "What does it cost?", a: "TeleForge runs on Google Gemini's free tier, which covers personal and small community bots. Each account can run up to 10 bots." },
-  { q: "Who can see my bot token?", a: "No one, including you. It's checked with Telegram once, encrypted with AES\u2011256\u2011GCM and never returned by the API. To change it, create the bot again." },
-  { q: "Can I change the persona later?", a: "Yes, any time. A running bot uses the new persona from its next message, with no restart." },
-  { q: "Does the bot remember the conversation?", a: "It keeps the last 10 exchanges of each chat as context. That memory clears if the server restarts; the activity log keeps 30 days." },
-  { q: "What if Gemini doesn't answer?", a: "Blocked content gets a polite refusal. If Gemini is rate-limited or times out, the bot sends a short apology rather than staying silent." },
-  { q: "What happens if the server restarts?", a: "Bots that were running start again automatically, and pick up messages that arrived while they were down." },
-  { q: "Is TeleForge made by Telegram?", a: "No. TeleForge is an independent project that uses Telegram's public Bot API and Google's Gemini API." },
-];
+/* ── FAQ: Interactive Accordion ───────────────────────────────────────── */
 
 export function Faq() {
   return (
-    <section id="faq" aria-labelledby="faq-title" className="scroll-mt-16 py-24 sm:py-32">
-      <Container className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
-        <h2 id="faq-title" className="type-section max-w-[10ch] text-text">
-          Questions people ask.
-        </h2>
-        <dl className="divide-y divide-line border-y border-line">
-          {FAQS.map((f) => (
-            <div key={f.q} className="py-6">
-              <dt className="text-md font-medium text-text">{f.q}</dt>
-              <dd className="mt-2 max-w-[60ch] text-md text-text-2">{f.a}</dd>
+    <section id="faq" aria-labelledby="faq-title" className="scroll-mt-16 py-20 sm:py-28">
+      <Container className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-16">
+        <div>
+          <div className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-accent mb-2">
+            <span>Knowledge Base</span>
+          </div>
+          <h2 id="faq-title" className="type-section text-text">
+            Questions people ask.
+          </h2>
+          <p className="mt-4 text-base text-text-2 leading-relaxed">
+            Everything you need to know about Telegram bots, Google Gemini API quotas, and privacy.
+          </p>
+
+          {/* Quick Help Card */}
+          <div className="mt-8 rounded-2xl border border-line-2 bg-surface p-5 shadow-xs">
+            <div className="flex items-center gap-2 text-text font-semibold text-sm">
+              <ChatCircleText size={18} className="text-accent" />
+              <span>Ready to test your first bot?</span>
             </div>
-          ))}
-        </dl>
+            <p className="mt-2 text-xs text-text-2 leading-relaxed">
+              Sign up in 30 seconds. No credit card or server setup needed to run on Gemini&apos;s free tier.
+            </p>
+            <div className="mt-4">
+              <Link
+                href="/signup"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-accent hover:underline"
+              >
+                <span>Create an account now</span>
+                <ArrowRight size={13} />
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* The interactive FAQ Accordion */}
+        <FaqAccordion />
       </Container>
     </section>
   );
 }
 
-/* ── Close ────────────────────────────────────────────────────────────── */
+/* ── Closing CTA Banner ───────────────────────────────────────────────── */
 
 export function Closing() {
   return (
-    <section aria-labelledby="close-title" className="border-t border-line bg-bg-2">
-      <Container className="flex flex-col gap-8 py-20 sm:py-24 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <h2 id="close-title" className="type-section max-w-[16ch] text-text">
-            Have a token ready? You&apos;re a minute away.
-          </h2>
-          <p className="mt-5 max-w-[44ch] text-lg text-text-2">Create an account, paste the token, pick a persona and start the bot.</p>
+    <section aria-labelledby="close-title" className="border-t border-line bg-bg-2 py-16 sm:py-24">
+      <Container>
+        <div className="relative overflow-hidden rounded-3xl border border-line-2 bg-gradient-to-br from-surface via-bg-2 to-surface p-8 shadow-2xl sm:p-12 lg:p-16">
+          {/* Ambient lighting effect */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-24 -right-24 size-80 rounded-full bg-accent/20 blur-3xl"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -bottom-24 -left-24 size-80 rounded-full bg-brand/15 blur-3xl"
+          />
+
+          <div className="relative z-10 flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 rounded-full border border-line-2 bg-surface/80 px-3.5 py-1 text-xs font-medium text-text-2 shadow-xs backdrop-blur-sm">
+                <span className="size-2 rounded-full bg-ok animate-pulse" />
+                <span>60-Second Setup</span>
+                <span className="text-text-3">•</span>
+                <span className="font-semibold text-accent">Free Gemini Tier</span>
+              </div>
+              <h2 id="close-title" className="mt-4 type-section text-text tracking-tight sm:text-4xl">
+                Have a token ready? <br />
+                <span className="text-brand">You&apos;re a minute away.</span>
+              </h2>
+              <p className="mt-3 max-w-xl text-base text-text-2 leading-relaxed sm:text-lg">
+                Create an account, paste the token from @BotFather, describe how your bot should talk, and watch it reply live on Telegram.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-4">
+              <CreateBotButton size="lg" />
+              <SignInLink className="h-11 px-5 border border-line-2 bg-surface hover:bg-bg-hover hover:border-line shadow-xs font-medium" />
+            </div>
+          </div>
         </div>
-        <CreateBotButton className="self-start lg:self-auto" />
       </Container>
     </section>
   );
 }
 
+/* ── Footer ───────────────────────────────────────────────────────────── */
+
 export function SiteFooter() {
   return (
-    <footer className="border-t border-line">
-      <Container className="flex flex-col gap-8 py-10 sm:flex-row sm:items-start sm:justify-between">
+    <footer className="border-t border-line bg-bg py-12">
+      <Container className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-3">
-          <Lockup size={24} />
-          <p className="max-w-[40ch] text-sm text-text-2">TeleForge isn&apos;t affiliated with Telegram or Google.</p>
+          <Lockup size={26} />
+          <p className="max-w-[42ch] text-xs text-text-2 leading-relaxed">
+            Craft intelligent Telegram bots with custom personalities powered by Google Gemini.
+          </p>
+          <div className="flex items-center gap-2 text-xs text-text-3">
+            <span className="size-2 rounded-full bg-ok" />
+            <span>All systems operational</span>
+          </div>
         </div>
-        <nav aria-label="Footer">
-          <ul className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
+
+        <nav aria-label="Footer Navigation">
+          <ul className="flex flex-wrap gap-x-8 gap-y-3 text-sm">
             <li>
-              <a href="#personas" className="text-text-2 hover:text-text">
+              <a href="#personas" className="text-text-2 transition hover:text-text">
                 Personas
               </a>
             </li>
             <li>
-              <a href="#how" className="text-text-2 hover:text-text">
+              <a href="#how" className="text-text-2 transition hover:text-text">
                 How it works
               </a>
             </li>
             <li>
-              <a href="#faq" className="text-text-2 hover:text-text">
+              <a href="#showcase" className="text-text-2 transition hover:text-text">
+                Overview
+              </a>
+            </li>
+            <li>
+              <a href="#runtime" className="text-text-2 transition hover:text-text">
+                Runtime
+              </a>
+            </li>
+            <li>
+              <a href="#faq" className="text-text-2 transition hover:text-text">
                 FAQ
               </a>
             </li>
             <li>
-              <Link href="/login" className="text-text-2 hover:text-text">
-                Sign in
-              </Link>
+              <FooterAuthLink />
             </li>
           </ul>
         </nav>
       </Container>
+      <div className="mx-auto mt-8 max-w-[1200px] border-t border-line px-5 pt-6 text-center text-caption text-text-3 sm:px-8">
+        TeleForge isn&apos;t affiliated with Telegram or Google. Built for creators and developers.
+      </div>
     </footer>
   );
 }
