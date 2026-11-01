@@ -14,28 +14,47 @@ The one memorable element is the **Live wire**: a single stream of recent messag
 
 ## Colour
 
-Define every colour as a token in `src/app/globals.css`, for both light and dark.
+The palette is the original Telegram-blue scheme (OKLCH ramps from the logo blue #229ED9 and a cool neutral). Define every colour as a token in `src/app/globals.css`, for both light and dark. Components use the token names, never hex values.
 
 | Token | Light | Dark | Use |
 |---|---|---|---|
-| paper | #F4F6F9 | #0B111B | page background |
-| panel | #FFFFFF | #121A27 | panels, inputs, incoming bubbles |
-| ink | #121A26 | #E7ECF3 | primary text |
-| ink-2 | #4A5566 | #9AA6B8 | secondary text (must pass 4.5:1 on paper and panel) |
-| line | #DCE2EA | #243044 | hairline borders, dividers |
-| rail | #0E1726 | #080D16 | left rail (dark in both themes) |
-| relay | #1D5FD1 | links #4C8DF6, button fill #1D5FD1 | primary buttons and links |
-| live | #12A150 | #2FBF6B | running status |
-| amber | #B7740A | #E0A23A | stopped, draft, warnings |
-| danger | #C93636 | #F06A6A | errors, destructive actions |
+| paper | #FCFDFE | #0A0D10 | page background |
+| panel | #FFFFFF | #0E1216 | panels, inputs, incoming bubbles |
+| ink | #131A22 | #EDF0F4 | primary text |
+| ink-2 | #5F6975 | #99A0A8 | secondary text (5.4:1 light, 6.8:1 dark on panel) |
+| ink-3 | #808A95 | #666E76 | icons and disabled only, never body text |
+| line | #E0E5EB | #1F252B | hairline borders, dividers |
+| line-strong | #CDD4DB | #2D343C | button and panel edges |
+| line-input | #8B949E | #606972 | text-field edges (3:1) |
+| rail | #F6F8FB (with a `line` hairline) | #070A0D | left rail |
+| relay | #006FA9 | #007CB7 | primary buttons, focus ring (#006FA9 light, #3AA9E0 dark) |
+| relay-link | #006FA9 | #83C7F0 | links and accent text |
+| live | #1A9951 | #259F56 | running status (text: #1B6C3A / #86DB9D) |
+| amber | #E79C27 | #EBA941 | draft status, warnings (text: #8F520D / #F0C374) |
+| danger | #C9302D | #C53732 | errors, destructive actions (text: #B02B27 / #F8A59B) |
+
+Derived values, all in `globals.css`:
+
+- **Surfaces:** `well` (#F6F8FB / #0E1216) for bands and table heads, `track` (#F0F3F7 / #12161B) for control tracks and disabled fields, `hover` (#EAEEF3 / #161B21), `pressed` (#E4E9EE / #1A2027).
+- **Relay tint:** `relay-tint` (#EAF6FE / #0B2231), `relay-tint-2` (#D6EDFD / #0F2E42), `relay-line` (#96D7FF / #1F5F86).
+- **Relay hover:** #006096 light, #006FA9 dark (darker, so white text stays above 4.5:1).
+- **Status tints and lines** for live, amber and danger, used by callouts.
+- **Button text:** white on relay and on danger in both themes.
+- **Brand blue** #229ED9 is for the logo only.
+
+### Rail
+
+- **Light:** the secondary background (`rail` #F6F8FB) with a hairline border. Rows hover to #EAEEF3. The selected row uses the relay tint (#EAF6FE).
+- **Dark:** the darkest background (#070A0D). Rows hover to #0E1216. The selected row uses the dark relay tint (#0B2231).
+- The rail has its own `rail-ink`, `rail-ink-2`, `rail-line`, `rail-field` and `rail-danger` tokens. All text on it passes 4.5:1 in both themes.
 
 ### Bot identity colours
 
 There are 8 hues. Pick one deterministically from a hash of the bot id, and use it for the avatar circle and the bot's tag in feeds.
 
-Every hue must give AA contrast against its white initial. In bubbles, a bot's reply uses a light tint of its hue (light theme) or a deep tint (dark theme), with ink text at AA contrast.
+Every hue gives AA contrast against its white initial (5.16:1 or better). In bubbles, a bot's reply uses a light tint of its hue (light theme) or a deep tint (dark theme), with ink text at AA contrast.
 
-Suggested set: #1D5FD1, #0F7B6C, #7A4BD6, #B44C1F, #A3317A, #2F6B2F, #8A5A00, #3C4A9E.
+Set (chosen to sit next to the blue): #006FA9, #0F7B6C, #6B4CC9, #B44C1F, #AE3685, #347A34, #8A5A00, #B1303F. The helper is `src/lib/bot-color.ts`.
 
 ## Type
 

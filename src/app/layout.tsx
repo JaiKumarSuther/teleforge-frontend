@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import "@fontsource-variable/mona-sans/wdth.css";
-import "@fontsource/monaspace-neon/400.css";
-import "@fontsource/monaspace-neon/500.css";
+import "@fontsource-variable/schibsted-grotesk/wght.css";
+import "@fontsource/spline-sans-mono/400.css";
+import "@fontsource/spline-sans-mono/500.css";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#fcfdfe" },
-    { media: "(prefers-color-scheme: dark)", color: "#0f1317" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0d10" },
   ],
 };
 

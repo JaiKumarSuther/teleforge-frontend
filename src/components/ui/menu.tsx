@@ -117,10 +117,10 @@ export function Menu({
   const itemClass = (danger?: boolean) =>
     cn(
       "flex h-9 w-full items-center gap-2.5 rounded-sm px-2.5 text-left text-sm outline-none select-none",
-      "focus-visible:outline-none focus:bg-bg-hover",
-      danger ? "text-danger-text focus:bg-danger-tint" : "text-text",
+      "focus-visible:outline-none focus:bg-hover",
+      danger ? "text-danger-text focus:bg-danger-tint" : "text-ink",
       "[&_svg]:shrink-0",
-      danger ? "[&_svg]:text-danger-text" : "[&_svg]:text-text-2",
+      danger ? "[&_svg]:text-danger-text" : "[&_svg]:text-ink-2",
     );
 
   return (
@@ -150,7 +150,7 @@ export function Menu({
           aria-label={label}
           onKeyDown={onMenuKey}
           className={cn(
-            "anim-pop absolute z-50 min-w-56 rounded-lg bg-surface p-1 shadow-pop outline-none",
+            "anim-pop absolute z-50 min-w-56 rounded-lg border border-line bg-panel p-1 shadow-pop outline-none",
             side === "bottom" ? "top-full mt-1.5" : "bottom-full mb-1.5",
             align === "end" ? "right-0" : "left-0",
             side === "bottom" ? (align === "end" ? "origin-top-right" : "origin-top-left") : align === "end" ? "origin-bottom-right" : "origin-bottom-left",
@@ -161,7 +161,7 @@ export function Menu({
             if (it.type === "separator") return <div key={`s${i}`} role="separator" className="-mx-1 my-1 h-px bg-line" />;
             if (it.type === "label")
               return (
-                <div key={`l${i}`} role="presentation" className="px-2.5 pt-2 pb-1 text-label text-text-2">
+                <div key={`l${i}`} role="presentation" className="px-2.5 pt-2 pb-1 text-label text-ink-2">
                   {it.label}
                 </div>
               );
@@ -181,14 +181,14 @@ export function Menu({
                 >
                   {it.icon}
                   <span className="flex-1">{it.label}</span>
-                  {it.checked && <Check weight="bold" className="text-accent-text!" />}
+                  {it.checked && <Check weight="bold" className="text-relay-link!" />}
                 </button>
               );
             const content = (
               <>
                 {it.icon}
                 <span className="flex-1 truncate">{it.label}</span>
-                {it.hint && <span className="text-label text-text-2">{it.hint}</span>}
+                {it.hint && <span className="text-label text-ink-2">{it.hint}</span>}
               </>
             );
             if (it.href) {

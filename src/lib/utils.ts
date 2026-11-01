@@ -6,9 +6,9 @@ import { extendTailwindMerge } from "tailwind-merge";
 const twMerge = extendTailwindMerge({
   extend: {
     theme: {
-      text: ["caption", "label", "sm", "md", "lg", "xl", "2xl", "3xl", "section", "display"],
+      text: ["caption", "label", "sm", "md", "title", "page", "lg", "xl", "2xl", "3xl", "section", "display"],
       shadow: ["1", "2", "pop", "frame"],
-      radius: ["xs", "sm", "md", "lg", "xl"],
+      radius: ["xs", "sm", "md", "lg", "xl", "bubble"],
     },
   },
 });
@@ -42,6 +42,21 @@ export function timeAgo(input: string | Date | null | undefined): string {
   return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
+/** Compact relative time for list rows: now, 5m, 3h, 2d, then a short date. */
+export function shortAgo(input: string | Date | null | undefined): string {
+  if (!input) return "";
+  const date = typeof input === "string" ? new Date(input) : input;
+  const s = Math.max(0, Math.floor((Date.now() - date.getTime()) / 1000));
+  if (s < 60) return "now";
+  const m = Math.floor(s / 60);
+  if (m < 60) return `${m}m`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h`;
+  const d = Math.floor(h / 24);
+  if (d < 7) return `${d}d`;
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
 export function formatDuration(ms: number): string {
   if (!ms || ms < 0) return "0s";
   const s = Math.floor(ms / 1000);
@@ -57,13 +72,6 @@ export function formatDuration(ms: number): string {
 export function formatClock(input: string | Date): string {
   const d = typeof input === "string" ? new Date(input) : input;
   return d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
-}
-
-/** Deterministic avatar tone (0–5) from a bot's id or name; colours live in globals.css per theme. */
-export function avatarTone(seed: string): number {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
-  return h % 6;
 }
 
 export function initials(name: string): string {

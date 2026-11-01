@@ -16,15 +16,27 @@ export function AppIcon({ size = 40, className, priority }: { size?: number; cla
   );
 }
 
-/** Mark + wordmark. The wordmark uses Mona Sans at its widest setting. */
-export function Lockup({ href = "/", className, size = 28, label = true }: { href?: string; className?: string; size?: number; label?: boolean }) {
+/** Mark + wordmark. `inverse` is for the dark rail. */
+export function Lockup({
+  href = "/",
+  className,
+  size = 28,
+  label = true,
+  inverse,
+  ariaLabel = "TeleForge home",
+}: {
+  href?: string;
+  className?: string;
+  size?: number;
+  label?: boolean;
+  inverse?: boolean;
+  ariaLabel?: string;
+}) {
   return (
-    <Link href={href} className={cn("inline-flex items-center gap-2 rounded-md", className)} aria-label="TeleForge home">
+    <Link href={href} className={cn("inline-flex items-center gap-2 rounded-md", className)} aria-label={ariaLabel}>
       <Mark size={size} priority />
       {label && (
-        <span className="type-wordmark text-lg text-text">
-          TeleForge
-        </span>
+        <span className={cn("type-wordmark text-title", inverse ? "text-rail-ink" : "text-ink")}>TeleForge</span>
       )}
     </Link>
   );

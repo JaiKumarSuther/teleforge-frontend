@@ -55,18 +55,18 @@ export function Dialog({ open, onClose, title, description, children, footer, cl
           <div className="anim-scrim absolute inset-0 bg-scrim" onClick={onClose} aria-hidden />
           <div
             className={cn(
-              "anim-dialog is-sheet relative flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-xl bg-surface shadow-pop sm:max-w-md sm:rounded-xl",
+              "anim-dialog is-sheet relative flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-xl border border-line bg-panel shadow-pop sm:max-w-md sm:rounded-xl",
               "pb-[env(safe-area-inset-bottom)] sm:pb-0",
               className,
             )}
           >
             <div className="flex items-start justify-between gap-4 px-5 pt-5 sm:px-6 sm:pt-6">
               <div className="min-w-0">
-                <h2 id={titleId} className="type-title text-text">
+                <h2 id={titleId} className="type-title text-ink">
                   {title}
                 </h2>
                 {description && (
-                  <div id={descId} className="mt-1.5 text-sm text-text-2">
+                  <div id={descId} className="mt-1.5 text-sm text-ink-2">
                     {description}
                   </div>
                 )}
@@ -75,14 +75,14 @@ export function Dialog({ open, onClose, title, description, children, footer, cl
                 type="button"
                 onClick={onClose}
                 aria-label="Close dialog"
-                className="-mt-1.5 -mr-2 flex size-9 shrink-0 items-center justify-center rounded-md text-text-2 hover:bg-bg-hover hover:text-text"
+                className="-mt-1.5 -mr-2 flex size-9 shrink-0 items-center justify-center rounded-md text-ink-2 hover:bg-hover hover:text-ink"
               >
                 <X />
               </button>
             </div>
             {children && <div className="overflow-y-auto overscroll-contain px-5 pt-4 pb-1 sm:px-6">{children}</div>}
             {footer ? (
-              <div className="mt-5 flex flex-col-reverse gap-2 border-t border-line bg-bg-2 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">{footer}</div>
+              <div className="mt-5 flex flex-col-reverse gap-2 border-t border-line bg-well px-5 py-4 sm:flex-row sm:justify-end sm:px-6">{footer}</div>
             ) : (
               <div className="h-5 sm:h-6" />
             )}

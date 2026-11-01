@@ -6,13 +6,16 @@ import { Spinner } from "./spinner";
 type Variant = "primary" | "secondary" | "ghost" | "danger" | "danger-secondary";
 type Size = "sm" | "md" | "lg";
 
+// States: hover (colour step), focus (global ring), pressed (scale 0.97), disabled, loading.
 // Disabled is its own neutral state (not a faded copy of the variant), so it never reads as broken.
+// Loading keeps the variant's colours (the button is disabled but aria-busy), with a spinner before the label.
+const off = "not-aria-busy:disabled:border-transparent not-aria-busy:disabled:bg-track not-aria-busy:disabled:text-ink-3";
 const variants: Record<Variant, string> = {
-  primary: "bg-accent text-on-accent hover:bg-accent-hover disabled:bg-bg-3 disabled:text-text-3",
-  secondary: "bg-surface text-text shadow-1 hover:bg-bg-2 hover:shadow-2 disabled:bg-bg-3 disabled:text-text-3 disabled:shadow-none",
-  ghost: "text-text-2 hover:bg-bg-hover hover:text-text disabled:text-text-3 disabled:bg-transparent",
-  danger: "bg-danger text-on-accent hover:bg-danger-hover disabled:bg-bg-3 disabled:text-text-3",
-  "danger-secondary": "bg-surface text-danger-text shadow-1 hover:bg-danger-tint hover:shadow-2 disabled:bg-bg-3 disabled:text-text-3 disabled:shadow-none",
+  primary: `bg-relay text-on-relay hover:bg-relay-hover active:bg-relay-hover ${off}`,
+  secondary: `border-line-strong bg-panel text-ink hover:bg-hover active:bg-pressed ${off}`,
+  ghost: `text-ink-2 hover:bg-hover hover:text-ink active:bg-pressed not-aria-busy:disabled:bg-transparent not-aria-busy:disabled:text-ink-3`,
+  danger: `bg-danger text-on-danger hover:bg-danger-hover active:bg-danger-hover ${off}`,
+  "danger-secondary": `border-line-strong bg-panel text-danger-text hover:bg-danger-tint active:bg-danger-tint ${off}`,
 };
 
 const sizes: Record<Size, string> = {
@@ -28,7 +31,7 @@ const iconSizes: Record<Size, string> = {
 };
 
 export const buttonBase =
-  "relative inline-flex shrink-0 select-none items-center justify-center whitespace-nowrap border border-transparent font-medium transition-[background-color,box-shadow,color,scale] duration-150 ease-out enabled:active:scale-[0.97] disabled:cursor-not-allowed";
+  "relative inline-flex shrink-0 select-none items-center justify-center whitespace-nowrap border border-transparent font-medium transition-[background-color,border-color,color,scale] duration-150 ease-out enabled:active:scale-[0.97] disabled:cursor-not-allowed aria-busy:cursor-progress motion-reduce:transition-none motion-reduce:active:scale-100";
 
 export function buttonClass({ variant = "primary", size = "md", icon = false }: { variant?: Variant; size?: Size; icon?: boolean } = {}) {
   return cn(buttonBase, variants[variant], icon ? iconSizes[size] : sizes[size]);
@@ -69,7 +72,7 @@ type LinkProps = { href: string; variant?: Variant; size?: Size; icon?: boolean;
 
 /** A link styled as a button. External URLs open in a new tab. */
 export function ButtonLink({ href, variant = "primary", size = "md", icon, className, children, ...props }: LinkProps) {
-  const cls = cn(buttonClass({ variant, size, icon }), "active:scale-[0.97]", className);
+  const cls = cn(buttonClass({ variant, size, icon }), "active:scale-[0.97] motion-reduce:active:scale-100", className);
   if (/^https?:\/\//.test(href)) {
     return (
       <a href={href} className={cls} target="_blank" rel="noreferrer" {...props}>

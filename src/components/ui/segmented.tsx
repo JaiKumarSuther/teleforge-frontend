@@ -11,7 +11,7 @@ export interface SegmentOption<T extends string> {
 
 /**
  * Segmented control as an ARIA radio group: one tab stop, arrow keys move the selection.
- * Concentric radii: track 8px with 2px padding, so segments are 6px.
+ * Concentric radii: track 6px with 2px padding, so segments are 4px.
  */
 export function Segmented<T extends string>({
   value,
@@ -36,7 +36,7 @@ export function Segmented<T extends string>({
   }
 
   return (
-    <div role="radiogroup" aria-label={label} className={cn("inline-flex h-9 shrink-0 rounded-md bg-bg-3 p-0.5", className)}>
+    <div role="radiogroup" aria-label={label} className={cn("inline-flex h-9 shrink-0 rounded-md border border-line bg-track p-0.5", className)}>
       {options.map((o, i) => {
         const active = i === index;
         return (
@@ -66,13 +66,13 @@ export function Segmented<T extends string>({
               }
             }}
             className={cn(
-              "flex h-8 items-center gap-1.5 rounded-sm px-3 text-label whitespace-nowrap transition-[background-color,color,box-shadow] duration-150",
+              "flex h-8 items-center gap-1.5 rounded-xs px-3 text-label whitespace-nowrap transition-[background-color,color] duration-150 motion-reduce:transition-none",
               "focus-visible:-outline-offset-2",
-              active ? "bg-surface font-medium text-text shadow-1" : "text-text-2 hover:text-text",
+              active ? "bg-panel font-medium text-ink shadow-1" : "text-ink-2 hover:text-ink",
             )}
           >
             {o.label}
-            {o.count !== undefined && <span className="text-text-2">{o.count}</span>}
+            {o.count !== undefined && <span className="text-ink-2">{o.count}</span>}
           </button>
         );
       })}

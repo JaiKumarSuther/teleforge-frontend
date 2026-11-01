@@ -60,12 +60,12 @@ export function Tooltip({
         <span
           role="tooltip"
           className={cn(
-            "anim-pop pointer-events-none absolute left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-md bg-text px-2 py-1 text-label whitespace-nowrap text-bg shadow-pop",
+            "anim-pop pointer-events-none absolute left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-sm bg-ink px-2 py-1 text-label whitespace-nowrap text-paper shadow-pop",
             side === "bottom" ? "top-full mt-2 origin-top" : "bottom-full mb-2 origin-bottom",
           )}
         >
           {content}
-          {shortcut && <span className="text-text-3">{shortcut}</span>}
+          {shortcut && <span className="opacity-75">{shortcut}</span>}
         </span>
       )}
     </span>

@@ -112,7 +112,7 @@ export function CommandMenu() {
       {open && (
         <div className="fixed inset-0 flex items-start justify-center px-3 pt-[12vh] sm:px-6">
           <div className="absolute inset-0 bg-scrim" onClick={() => setOpen(false)} aria-hidden />
-          <Command label="Command menu" loop className="relative w-full max-w-xl overflow-hidden rounded-xl bg-surface shadow-pop outline-none">
+          <Command label="Command menu" loop className="relative w-full max-w-xl overflow-hidden rounded-lg border border-line bg-panel shadow-pop outline-none">
             <div className="flex items-center gap-3 border-b border-line px-4">
               <MagnifyingGlass size={18} className="shrink-0 text-text-2" />
               <Command.Input

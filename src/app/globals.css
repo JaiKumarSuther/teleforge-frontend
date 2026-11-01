@@ -1,112 +1,164 @@
 @import "tailwindcss";
 
-/* Class-based dark mode (next-themes sets .dark on <html>; system preference is the default). */
+/* Class-based dark mode (next-themes sets .dark on <html>; the OS preference is the default). */
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ─────────────────────────────────────────────────────────────
-   TeleForge design tokens
-   Colour: OKLCH ramps generated from the logo's Telegram blue
-   (#229ED9, hue 236) and a cool neutral (hue 250). Every text
-   pair below is ≥ 4.5:1, input edges ≥ 3:1, focus ring ≥ 3:1,
+   TeleForge design tokens (names from DESIGN.md, values from the
+   original Telegram-blue palette: OKLCH ramps generated from the
+   logo blue #229ED9, hue 236, and a cool neutral, hue 250).
+   Named tokens first (paper, panel, ink, ink-2, line, rail, relay,
+   live, amber, danger), then derived tints and text variants, then
+   the older names (bg, surface, text, accent…) as aliases so pages
+   that have not been redesigned yet keep working.
+   Every text pair is ≥ 4.5:1, input edges ≥ 3:1, focus ring ≥ 3:1,
    measured in both themes.
    ───────────────────────────────────────────────────────────── */
 :root {
-  --bg: #fcfdfe;            /* page */
-  --bg-2: #f6f8fb;          /* bands, table heads, chrome wells */
-  --bg-3: #f0f3f7;          /* control tracks, disabled fields */
-  --bg-hover: #eaeef3;
-  --bg-active: #e4e9ee;
-  --surface: #ffffff;       /* raised panels sit lighter than the page */
-  --line: #e0e5eb;          /* separators */
-  --line-2: #cdd4db;        /* panel and control edges */
-  --line-input: #8b949e;    /* text-field edges, 3:1 */
-  --text: #131a22;          /* 17:1 */
-  --text-2: #5f6975;        /* secondary, 5.4:1 */
-  --text-3: #808a95;        /* icons, disabled and decoration (3.5:1), never body text */
-  --placeholder: #69727d;   /* 4.6:1 on every surface */
-  --brand: #229ed9;         /* logo only */
-  --accent: #006fa9;        /* primary fills, links, focus: white text 5.5:1 */
-  --accent-hover: #006096;
-  --accent-text: #006fa9;
-  --accent-tint: #eaf6fe;
-  --accent-tint-2: #d6edfd;
-  --accent-line: #96d7ff;
-  --on-accent: #ffffff;
-  --focus: #006fa9;
-  --ok: #1a9951;
-  --ok-text: #1b6c3a;
-  --ok-tint: #e5faea;
-  --ok-line: #b3e2be;
+  /* DESIGN.md tokens */
+  --paper: #fcfdfe;
+  --panel: #ffffff;
+  --ink: #131a22;           /* 17:1 */
+  --ink-2: #5f6975;         /* 5.4:1 */
+  --line: #e0e5eb;
+  --rail: #f6f8fb;          /* light: the secondary background with a hairline; dark: the darkest background */
+  --relay: #006fa9;         /* button fill: white text 5.5:1 */
+  --relay-link: #006fa9;    /* links and accent text */
+  --live: #1a9951;          /* dots and fills; text uses live-text */
+  --amber: #e79c27;         /* dots and fills; text uses amber-text */
   --danger: #c9302d;
+
+  /* Derived: hover, wells, edges, tints */
+  --relay-hover: #006096;
+  --relay-tint: #eaf6fe;
+  --relay-tint-2: #d6edfd;
+  --relay-line: #96d7ff;
+  --live-text: #1b6c3a;
+  --live-tint: #e5faea;
+  --live-line: #b3e2be;
+  --amber-text: #8f520d;
+  --amber-tint: #fff3e2;
+  --amber-line: #f5d29c;
   --danger-hover: #b02b27;
   --danger-text: #b02b27;
   --danger-tint: #ffefed;
   --danger-line: #fac6bf;
-  --warn: #e79c27;
-  --warn-text: #8f520d;
-  --warn-tint: #fff3e2;
-  --warn-line: #f5d29c;
-  --chat-bg: #edf2f7;
-  --bubble-in: #ffffff;
-  --bubble-out: #dcf0fd;
+  --well: #f6f8fb;          /* bands, table heads, chrome wells */
+  --track: #f0f3f7;         /* control tracks, disabled fields */
+  --hover: #eaeef3;
+  --pressed: #e4e9ee;
+  --line-strong: #cdd4db;   /* panel and control edges */
+  --line-input: #8b949e;    /* text-field edges, 3:1 */
+  --ink-3: #808a95;         /* icons and disabled (3.5:1), never body text */
+  --placeholder: #69727d;   /* 4.6:1 on every surface */
+  --focus: #006fa9;
+  --on-relay: #ffffff;
+  --on-danger: #ffffff;
   --scrim: oklch(0.2 0.02 250 / 0.4);
 
-  /* Elevation: a 1px ring for structure, then lift and ambient layers */
-  --sh-1: 0 0 0 1px oklch(0.25 0.02 250 / 0.09), 0 1px 2px -1px oklch(0.25 0.02 250 / 0.08), 0 2px 4px 0 oklch(0.25 0.02 250 / 0.04);
-  --sh-2: 0 0 0 1px oklch(0.25 0.02 250 / 0.12), 0 2px 4px -1px oklch(0.25 0.02 250 / 0.08), 0 6px 12px -2px oklch(0.25 0.02 250 / 0.06);
-  --sh-pop: 0 0 0 1px oklch(0.25 0.02 250 / 0.1), 0 4px 8px -2px oklch(0.25 0.02 250 / 0.08), 0 16px 32px -8px oklch(0.25 0.02 250 / 0.18);
-  --sh-frame: 0 0 0 1px oklch(0.25 0.02 250 / 0.1), 0 2px 4px -2px oklch(0.25 0.02 250 / 0.06), 0 24px 48px -16px oklch(0.25 0.03 250 / 0.22);
+  /* The rail: secondary background in light, darkest background in dark */
+  --rail-hover: #eaeef3;
+  --rail-active: #eaf6fe;   /* the accent tint marks the selected row */
+  --rail-line: #e0e5eb;
+  --rail-field: #ffffff;
+  --rail-ink: #131a22;
+  --rail-ink-2: #5f6975;
+  --rail-ink-3: #808a95;
+  --rail-link: #006fa9;
+  --rail-danger: #b02b27;
+
+  /* Soft shadow for menus, dialogs and the drawer only */
+  --shadow-float: 0 0 0 1px oklch(0.25 0.02 250 / 0.1), 0 4px 8px -2px oklch(0.25 0.02 250 / 0.08), 0 16px 32px -8px oklch(0.25 0.02 250 / 0.18);
+
+  /* Older names, pointing at the tokens above */
+  --bg: var(--paper);
+  --bg-2: var(--well);
+  --bg-3: var(--track);
+  --bg-hover: var(--hover);
+  --bg-active: var(--pressed);
+  --surface: var(--panel);
+  --line-2: var(--line-strong);
+  --text: var(--ink);
+  --text-2: var(--ink-2);
+  --text-3: var(--ink-3);
+  --brand: #229ed9;         /* logo only */
+  --accent: var(--relay);
+  --accent-hover: var(--relay-hover);
+  --accent-text: var(--relay-link);
+  --accent-tint: var(--relay-tint);
+  --accent-tint-2: var(--relay-tint-2);
+  --accent-line: var(--relay-line);
+  --on-accent: var(--on-relay);
+  --ok: var(--live);
+  --ok-text: var(--live-text);
+  --ok-tint: var(--live-tint);
+  --ok-line: var(--live-line);
+  --warn: var(--amber);
+  --warn-text: var(--amber-text);
+  --warn-tint: var(--amber-tint);
+  --warn-line: var(--amber-line);
+  --chat-bg: #edf2f7;
+  --bubble-in: var(--panel);
+  --bubble-out: #dcf0fd;
 }
 
 .dark {
-  --bg: #0f1317;
-  --bg-2: #13181d;
-  --bg-3: #181d22;
-  --bg-hover: #1d2329;
-  --bg-active: #22292f;
-  --surface: #13181d;
-  --line: #242a31;
-  --line-2: #343b43;
-  --line-input: #606972;    /* 3.2:1 on surface */
-  --text: #edf0f4;
-  --text-2: #99a0a8;
-  --text-3: #666e76;
-  --placeholder: #7d858e;
-  --brand: #229ed9;
-  --accent: #007cb7;
-  --accent-hover: #0c86c2;
-  --accent-text: #83c7f0;
-  --accent-tint: #0b2231;
-  --accent-tint-2: #0f2e42;
-  --accent-line: #1f5f86;
-  --on-accent: #ffffff;
-  --focus: #3aa9e0;
-  --ok: #259f56;
-  --ok-text: #86db9d;
-  --ok-tint: #0c2514;
-  --ok-line: #1c472a;
+  --paper: #0a0d10;
+  --panel: #0e1216;
+  --ink: #edf0f4;
+  --ink-2: #99a0a8;
+  --line: #1f252b;
+  --rail: #070a0d;
+  --relay: #007cb7;
+  --relay-link: #83c7f0;
+  --live: #259f56;
+  --amber: #eba941;
   --danger: #c53732;
+
+  --relay-hover: #006fa9;   /* darker, not lighter: white on #0c86c2 was 4.0:1 */
+  --relay-tint: #0b2231;
+  --relay-tint-2: #0f2e42;
+  --relay-line: #1f5f86;
+  --live-text: #86db9d;
+  --live-tint: #0c2514;
+  --live-line: #1c472a;
+  --amber-text: #f0c374;
+  --amber-tint: #312008;
+  --amber-line: #593b11;
   --danger-hover: #d0433d;
   --danger-text: #f8a59b;
   --danger-tint: #361714;
   --danger-line: #672a25;
-  --warn: #eba941;
-  --warn-text: #f0c374;
-  --warn-tint: #312008;
-  --warn-line: #593b11;
-  --chat-bg: #0b0f13;
-  --bubble-in: #1d2329;
-  --bubble-out: #0f2e42;
+  --well: #0e1216;
+  --track: #12161b;
+  --hover: #161b21;
+  --pressed: #1a2027;
+  --line-strong: #2d343c;
+  --line-input: #606972;    /* 3.2:1 on panel */
+  --ink-3: #666e76;
+  --placeholder: #7d858e;
+  --focus: #3aa9e0;
   --scrim: oklch(0.05 0.01 250 / 0.6);
 
-  --sh-1: 0 0 0 1px oklch(1 0 0 / 0.075);
-  --sh-2: 0 0 0 1px oklch(1 0 0 / 0.12);
-  --sh-pop: 0 0 0 1px oklch(1 0 0 / 0.1), 0 16px 32px -8px oklch(0 0 0 / 0.6);
-  --sh-frame: 0 0 0 1px oklch(1 0 0 / 0.09), 0 24px 48px -16px oklch(0 0 0 / 0.7);
+  --rail-hover: #0e1216;
+  --rail-active: #0b2231;
+  --rail-line: #1f252b;
+  --rail-field: #0e1216;
+  --rail-ink: #edf0f4;
+  --rail-ink-2: #99a0a8;
+  --rail-ink-3: #666e76;
+  --rail-link: #83c7f0;
+  --rail-danger: #f8a59b;
+
+  --shadow-float: 0 0 0 1px oklch(1 0 0 / 0.1), 0 16px 32px -8px oklch(0 0 0 / 0.6);
+
+  --chat-bg: #070a0d;
+  --bubble-out: #0f2e42;
 }
 
 @theme {
-  /* Only these sizes exist. Each pairs a size with its line height. */
+  /* Type scale (DESIGN.md): 12 caption, 13 label, 14 body-sm, 16 body, 20 title, 28 page heading, 40 display.
+     lg/xl and 2xl/3xl stay as aliases so older pages land on the same scale. */
   --text-*: initial;
   --text-caption: 0.75rem;
   --text-caption--line-height: 1rem;
@@ -116,41 +168,47 @@
   --text-sm--line-height: 1.25rem;
   --text-md: 1rem;
   --text-md--line-height: 1.5rem;
-  --text-lg: 1.125rem;
+  --text-title: 1.25rem;
+  --text-title--line-height: 1.75rem;
+  --text-page: 1.75rem;
+  --text-page--line-height: 2rem;
+  --text-display: 2.5rem;
+  --text-display--line-height: 2.75rem;
+  --text-lg: 1.25rem;
   --text-lg--line-height: 1.75rem;
   --text-xl: 1.25rem;
   --text-xl--line-height: 1.75rem;
-  --text-2xl: 1.5rem;
-  --text-2xl--line-height: 1.875rem;
-  --text-3xl: 2rem;
-  --text-3xl--line-height: 2.25rem;
-  --text-section: clamp(2rem, 1.35rem + 2.3vw, 3.25rem);
-  --text-section--line-height: 1.04;
-  --text-display: clamp(2.75rem, 1.5rem + 4.6vw, 5.25rem);
-  --text-display--line-height: 0.98;
+  --text-2xl: 1.75rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.75rem;
+  --text-3xl--line-height: 2rem;
+  --text-section: 1.75rem;
+  --text-section--line-height: 2rem;
 
   --font-*: initial;
-  --font-sans: "Mona Sans Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Monaspace Neon", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: "Schibsted Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Spline Sans Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Three weights in running use */
+  /* 400 body, 500 labels, 600 headings (bold is kept as an alias for 600) */
   --font-weight-*: initial;
   --font-weight-normal: 400;
-  --font-weight-medium: 550;
-  --font-weight-bold: 700;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 600;
 
   --tracking-*: initial;
-  --tracking-tight: -0.012em;
-  --tracking-tighter: -0.022em;
-  --tracking-display: -0.032em;
+  --tracking-tight: -0.01em;
+  --tracking-tighter: -0.015em;
+  --tracking-display: -0.02em;
 
-  /* Radii by level; nested shapes are concentric (inner = outer - padding) */
+  /* 6 controls, 10 panels, 18 bubbles; xs is for small chips and keys */
   --radius-*: initial;
   --radius-xs: 4px;
   --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 10px;
+  --radius-bubble: 18px;
 
   --ease-*: initial;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -165,19 +223,65 @@
   --color-*: initial;
   --color-transparent: transparent;
   --color-current: currentColor;
+
+  --color-paper: var(--paper);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-line-input: var(--line-input);
+  --color-well: var(--well);
+  --color-track: var(--track);
+  --color-hover: var(--hover);
+  --color-pressed: var(--pressed);
+  --color-placeholder: var(--placeholder);
+  --color-rail: var(--rail);
+  --color-rail-hover: var(--rail-hover);
+  --color-rail-active: var(--rail-active);
+  --color-rail-line: var(--rail-line);
+  --color-rail-field: var(--rail-field);
+  --color-rail-ink: var(--rail-ink);
+  --color-rail-ink-2: var(--rail-ink-2);
+  --color-rail-ink-3: var(--rail-ink-3);
+  --color-rail-link: var(--rail-link);
+  --color-rail-danger: var(--rail-danger);
+  --color-relay: var(--relay);
+  --color-relay-hover: var(--relay-hover);
+  --color-relay-link: var(--relay-link);
+  --color-relay-tint: var(--relay-tint);
+  --color-relay-tint-2: var(--relay-tint-2);
+  --color-relay-line: var(--relay-line);
+  --color-on-relay: var(--on-relay);
+  --color-on-danger: var(--on-danger);
+  --color-live: var(--live);
+  --color-live-text: var(--live-text);
+  --color-live-tint: var(--live-tint);
+  --color-live-line: var(--live-line);
+  --color-amber: var(--amber);
+  --color-amber-text: var(--amber-text);
+  --color-amber-tint: var(--amber-tint);
+  --color-amber-line: var(--amber-line);
+  --color-danger: var(--danger);
+  --color-danger-hover: var(--danger-hover);
+  --color-danger-text: var(--danger-text);
+  --color-danger-tint: var(--danger-tint);
+  --color-danger-line: var(--danger-line);
+  --color-focus: var(--focus);
+  --color-scrim: var(--scrim);
+
+  /* Older names */
   --color-bg: var(--bg);
   --color-bg-2: var(--bg-2);
   --color-bg-3: var(--bg-3);
   --color-bg-hover: var(--bg-hover);
   --color-bg-active: var(--bg-active);
   --color-surface: var(--surface);
-  --color-line: var(--line);
   --color-line-2: var(--line-2);
-  --color-line-input: var(--line-input);
   --color-text: var(--text);
   --color-text-2: var(--text-2);
   --color-text-3: var(--text-3);
-  --color-placeholder: var(--placeholder);
   --color-brand: var(--brand);
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
@@ -186,16 +290,10 @@
   --color-accent-tint-2: var(--accent-tint-2);
   --color-accent-line: var(--accent-line);
   --color-on-accent: var(--on-accent);
-  --color-focus: var(--focus);
   --color-ok: var(--ok);
   --color-ok-text: var(--ok-text);
   --color-ok-tint: var(--ok-tint);
   --color-ok-line: var(--ok-line);
-  --color-danger: var(--danger);
-  --color-danger-hover: var(--danger-hover);
-  --color-danger-text: var(--danger-text);
-  --color-danger-tint: var(--danger-tint);
-  --color-danger-line: var(--danger-line);
   --color-warn: var(--warn);
   --color-warn-text: var(--warn-text);
   --color-warn-tint: var(--warn-tint);
@@ -203,13 +301,13 @@
   --color-chat-bg: var(--chat-bg);
   --color-bubble-in: var(--bubble-in);
   --color-bubble-out: var(--bubble-out);
-  --color-scrim: var(--scrim);
 
+  /* Shadows: only menus, dialogs and the drawer float. The hairline ones are borders in disguise. */
   --shadow-*: initial;
-  --shadow-1: var(--sh-1);
-  --shadow-2: var(--sh-2);
-  --shadow-pop: var(--sh-pop);
-  --shadow-frame: var(--sh-frame);
+  --shadow-1: 0 0 0 1px var(--line);
+  --shadow-2: 0 0 0 1px var(--line-strong);
+  --shadow-frame: 0 0 0 1px var(--line);
+  --shadow-pop: var(--shadow-float);
 }
 
 @layer base {
@@ -218,7 +316,7 @@
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
     scroll-padding-top: 7rem;
-    scrollbar-color: var(--line-2) transparent;
+    scrollbar-color: var(--line-strong) transparent;
     overflow-x: clip;
   }
   html.dark {
@@ -227,12 +325,13 @@
   body {
     min-height: 100dvh;
     overflow-x: clip;
-    background: var(--bg);
-    color: var(--text);
+    background: var(--paper);
+    color: var(--ink);
     font-family: var(--font-sans);
     font-size: var(--text-sm);
     line-height: var(--text-sm--line-height);
     font-weight: 400;
+    font-variant-numeric: proportional-nums;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
@@ -244,11 +343,11 @@
     text-wrap: pretty;
   }
   ::selection {
-    background: var(--accent-tint-2);
-    color: var(--text);
+    background: var(--relay-tint-2);
+    color: var(--ink);
   }
   input, textarea {
-    caret-color: var(--accent);
+    caret-color: var(--relay);
   }
   :focus-visible {
     outline: 2px solid var(--focus);
@@ -272,74 +371,62 @@
 }
 
 @layer components {
-  /* Type roles. Mona Sans stretches from wide display to normal text. */
+  /* Type roles. One family, weight does the work. */
   .type-display {
     font-size: var(--text-display);
     line-height: var(--text-display--line-height);
-    font-stretch: 108%;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: var(--tracking-display);
     overflow-wrap: break-word;
   }
-  @media (min-width: 768px) {
-    .type-display { font-stretch: 125%; }
+  @media (max-width: 639px) {
+    .type-display { font-size: 2rem; line-height: 2.25rem; }
   }
   .type-section {
-    font-size: var(--text-section);
-    line-height: var(--text-section--line-height);
-    font-stretch: 115%;
-    font-weight: 700;
+    font-size: var(--text-page);
+    line-height: var(--text-page--line-height);
+    font-weight: 600;
     letter-spacing: var(--tracking-tighter);
     overflow-wrap: break-word;
   }
   .type-page {
-    font-size: var(--text-2xl);
-    line-height: var(--text-2xl--line-height);
-    font-stretch: 110%;
-    font-weight: 700;
+    font-size: var(--text-page);
+    line-height: var(--text-page--line-height);
+    font-weight: 600;
     letter-spacing: var(--tracking-tighter);
   }
   .type-title {
-    font-size: var(--text-lg);
-    line-height: var(--text-lg--line-height);
-    font-stretch: 105%;
-    font-weight: 550;
+    font-size: var(--text-title);
+    line-height: var(--text-title--line-height);
+    font-weight: 600;
     letter-spacing: var(--tracking-tight);
   }
   .type-wordmark {
-    font-stretch: 118%;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: var(--tracking-tight);
   }
-  /* Mona Sans' tabular figures use a slashed zero, so numbers stay proportional and columns are right-aligned instead. */
-
-  /* A raised panel: lighter than the page, ring + soft lift, still drawn in forced-colors mode */
-  .panel {
-    background: var(--surface);
-    border: 1px solid transparent;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--sh-1);
+  /* Tokens, @usernames and timestamps */
+  .type-mono {
+    font-family: var(--font-mono);
+    font-size: var(--text-label);
+    letter-spacing: 0;
   }
 
-  /* Bot monograms: six muted identity tones, tuned separately per theme (letters ≥ 4.5:1 on their fill) */
-  .avatar { font-stretch: 110%; background: oklch(0.93 0.035 236); color: oklch(0.42 0.1 240); }
-  .avatar[data-tone="1"] { background: oklch(0.93 0.04 160); color: oklch(0.42 0.09 160); }
-  .avatar[data-tone="2"] { background: oklch(0.93 0.045 78); color: oklch(0.45 0.09 62); }
-  .avatar[data-tone="3"] { background: oklch(0.93 0.035 295); color: oklch(0.43 0.12 295); }
-  .avatar[data-tone="4"] { background: oklch(0.93 0.035 25); color: oklch(0.45 0.13 27); }
-  .avatar[data-tone="5"] { background: oklch(0.93 0.03 200); color: oklch(0.42 0.07 205); }
-  .dark .avatar { background: oklch(0.32 0.06 240); color: oklch(0.88 0.06 236); }
-  .dark .avatar[data-tone="1"] { background: oklch(0.32 0.055 160); color: oklch(0.88 0.07 160); }
-  .dark .avatar[data-tone="2"] { background: oklch(0.33 0.055 70); color: oklch(0.89 0.08 78); }
-  .dark .avatar[data-tone="3"] { background: oklch(0.32 0.06 295); color: oklch(0.88 0.06 295); }
-  .dark .avatar[data-tone="4"] { background: oklch(0.32 0.06 25); color: oklch(0.88 0.06 25); }
-  .dark .avatar[data-tone="5"] { background: oklch(0.32 0.045 205); color: oklch(0.88 0.05 200); }
+  /* A panel: lighter than the page, hairline border, no shadow */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+  }
 
   /* Skeletons appear only if loading takes longer than 150ms, so fast loads never flash */
   .skeleton {
-    background: var(--bg-3);
+    background: var(--track);
     border-radius: var(--radius-sm);
     animation: skeleton-in 200ms ease-out 150ms both, skeleton-breathe 1.6s ease-in-out 350ms infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton { animation: skeleton-in 200ms ease-out 150ms both; }
   }
 }
 
@@ -355,7 +442,7 @@
   50% { opacity: 0.6; }
 }
 
-/* Popovers and dialogs: enter with opacity + a small scale/rise from their origin.
+/* Popovers, dialogs and the drawer: enter with opacity + a small scale/rise from their origin.
    Movement only when the user hasn't asked for reduced motion; otherwise a plain fade. */
 @keyframes pop-in {
   from { opacity: 0; transform: scale(0.97); }
@@ -375,6 +462,7 @@
 .anim-pop { animation: fade-in 120ms var(--ease-out) both; }
 .anim-dialog { animation: fade-in 160ms var(--ease-out) both; }
 .anim-scrim { animation: fade-in 160ms var(--ease-out) both; }
+.anim-drawer { animation: fade-in 160ms var(--ease-out) both; }
 @media (prefers-reduced-motion: no-preference) {
   .anim-pop { animation: pop-in 140ms var(--ease-out) both; }
   .anim-dialog { animation: rise-in 200ms var(--ease-out) both; }

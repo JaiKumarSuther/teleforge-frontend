@@ -1,71 +1,74 @@
+"use client";
+
+import { MotionConfig, motion, type Variants } from "framer-motion";
 import { ArrowRight, CheckCircle } from "@phosphor-icons/react/dist/ssr";
 import { CreateBotButton } from "./auth-cta";
-import { HeroDemo } from "./hero-demo";
+
+// Plays once on load. With reduced motion the rise is dropped and only the fade remains.
+const container: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.09, delayChildren: 0.05 } } };
+const item: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.23, 1, 0.32, 1] } },
+};
 
 export function Hero() {
   return (
-    <section aria-labelledby="hero-title" className="relative overflow-hidden pt-8 pb-16 sm:pt-12 sm:pb-24">
-      {/* Ambient background glow */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 -top-20 -z-10 flex justify-center overflow-hidden blur-3xl opacity-35 dark:opacity-20"
-      >
-        <div className="h-[26rem] w-[50rem] rounded-full bg-gradient-to-tr from-accent via-[#229ed9] to-accent" />
-      </div>
+    <MotionConfig reducedMotion="user">
+    <section aria-labelledby="hero-title" className="relative flex min-h-[calc(100dvh-4rem)] items-center justify-center overflow-hidden py-8">
+      <motion.div variants={container} initial="hidden" animate="show" className="mx-auto flex w-full max-w-[1100px] flex-col items-center px-5 text-center sm:px-8">
+        <motion.div variants={item} className="inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-full border border-line-strong bg-panel px-5 py-2 text-sm font-medium text-ink-2 sm:text-md">
+          <span className="inline-flex items-center gap-2">
+            <span className="size-2.5 rounded-full bg-live" />
+            Powered by Google Gemini 3.8 Flash
+          </span>
+          <span aria-hidden className="hidden text-ink-3 sm:inline">
+            |
+          </span>
+          <span className="text-relay-link">Zero Server Setup</span>
+        </motion.div>
 
-      <div className="mx-auto flex max-w-[1200px] flex-col items-center px-5 text-center sm:px-8">
-        {/* Top badge */}
-        <div className="inline-flex items-center gap-2 rounded-full border border-line-2 bg-surface/80 px-3.5 py-1 text-xs font-medium text-text-2 shadow-xs backdrop-blur-md">
-          <span className="size-2 rounded-full bg-ok animate-pulse" />
-          <span>Powered by Google Gemini 3.8 Flash</span>
-          <span className="text-text-3 font-normal">|</span>
-          <span className="font-semibold text-accent">Zero Server Setup</span>
-        </div>
-
-        {/* Display title */}
-        <h1
+        <motion.h1
+          variants={item}
           id="hero-title"
-          className="mt-5 max-w-4xl type-display text-text tracking-tight lg:text-[min(4.4rem,calc(1.3rem+4.2vw))]"
+          className="mt-[clamp(1rem,3.5vh,2rem)] max-w-5xl type-display text-[clamp(2.25rem,min(6vw,8.5vh),5.5rem)] leading-[1.05] tracking-tight text-ink"
         >
-          Give <span className="font-mono text-brand">/newbot</span> a personality.
-        </h1>
+          Give <span className="font-mono text-relay-link">/newbot</span> a personality.
+        </motion.h1>
 
-        {/* Subtitle */}
-        <p className="mt-4 max-w-2xl text-base text-text-2 leading-relaxed sm:text-lg">
+        <motion.p variants={item} className="mt-[clamp(0.75rem,2.5vh,1.5rem)] max-w-3xl text-md leading-relaxed text-ink-2 sm:text-title sm:leading-9">
           Write how your Telegram bot should talk. TeleForge answers every message in that voice with Google Gemini, and keeps each chat synced live to your dashboard.
-        </p>
+        </motion.p>
 
-        {/* CTA Buttons */}
-        <div className="mt-7 flex flex-wrap items-center justify-center gap-3.5">
-          <CreateBotButton size="lg" />
+        <motion.div variants={item} className="mt-[clamp(1.25rem,4vh,2.5rem)] flex flex-wrap items-center justify-center gap-4">
+          <CreateBotButton size="lg" className="h-14 px-8 text-title" />
           <a
             href="#how"
-            className="inline-flex h-11 items-center justify-center gap-1.5 rounded-md border border-line-2 bg-surface px-5 text-md font-medium text-text shadow-xs transition hover:bg-bg-hover hover:border-line"
+            className="inline-flex h-14 items-center justify-center gap-2 rounded-md border border-line-strong bg-panel px-8 text-title font-medium text-ink transition hover:bg-hover"
           >
             <span>See how it works</span>
-            <ArrowRight size={16} />
+            <motion.span aria-hidden className="inline-flex" whileHover={{ x: 3 }} transition={{ duration: 0.15 }}>
+              <ArrowRight size={20} />
+            </motion.span>
           </a>
-        </div>
+        </motion.div>
 
-        {/* Feature highlights */}
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-7 gap-y-2.5 text-xs text-text-2 sm:text-sm">
-          <div className="flex items-center gap-1.5">
-            <CheckCircle size={15} weight="fill" className="text-ok" />
-            <span>Free Gemini 2.5 tier</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <CheckCircle size={15} weight="fill" className="text-ok" />
-            <span>No server or webhook needed</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <CheckCircle size={15} weight="fill" className="text-ok" />
-            <span>Connects Telegram in 60s</span>
-          </div>
-        </div>
-
-        {/* Interactive Telegram bot demonstration */}
-        <HeroDemo />
-      </div>
+        <motion.ul variants={item} className="mt-[clamp(1.5rem,5vh,4rem)] grid w-full max-w-5xl grid-cols-1 divide-y divide-line overflow-hidden rounded-lg border border-line bg-panel text-left sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+          {[
+            ["Free Gemini 3.8 tier", "Start without a card."],
+            ["No server or webhook needed", "We run the bot for you."],
+            ["Connects Telegram in 60s", "Paste a BotFather token."],
+          ].map(([title, body]) => (
+            <li key={title} className="flex gap-3 p-5">
+              <CheckCircle size={22} weight="fill" className="mt-0.5 shrink-0 text-live" />
+              <div>
+                <p className="text-md font-medium text-ink">{title}</p>
+                <p className="mt-0.5 text-sm text-ink-2">{body}</p>
+              </div>
+            </li>
+          ))}
+        </motion.ul>
+      </motion.div>
     </section>
+    </MotionConfig>
   );
 }

@@ -1,15 +1,15 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
-import { Sparkle, Check, PaperPlaneTilt } from "@phosphor-icons/react";
+import { Sparkle, Check, PaperPlaneTilt, ShoppingBag, GraduationCap, Code, ForkKnife } from "@phosphor-icons/react";
 import { PERSONA_TEMPLATES } from "@/lib/persona-templates";
 import { cn } from "@/lib/utils";
 
-const ICONS: Record<string, string> = {
-  support: "🛍️",
-  tutor: "📚",
-  dev: "💻",
-  concierge: "🍽️",
+const ICONS: Record<string, typeof Code> = {
+  support: ShoppingBag,
+  tutor: GraduationCap,
+  dev: Code,
+  concierge: ForkKnife,
 };
 
 const BOT_NAMES: Record<string, { name: string; handle: string }> = {
@@ -93,7 +93,10 @@ export function PersonaSwitcher() {
                   : "bg-surface text-text-2 border border-line hover:text-text hover:bg-bg-hover shadow-xs"
               )}
             >
-              <span>{ICONS[p.id]}</span>
+              {(() => {
+                const Icon = ICONS[p.id] ?? Sparkle;
+                return <Icon aria-hidden size={16} />;
+              })()}
               <span>{p.label}</span>
             </button>
           );

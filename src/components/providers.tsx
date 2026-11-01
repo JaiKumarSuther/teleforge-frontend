@@ -20,10 +20,10 @@ function ThemedToaster() {
       toastOptions={{
         classNames: {
           toast:
-            "!bg-surface !text-text !border-transparent !shadow-pop !rounded-lg !font-sans !text-sm !gap-2.5 !px-4 !py-3",
-          description: "!text-text-2",
-          error: "[&_[data-icon]]:!text-danger",
-          success: "[&_[data-icon]]:!text-ok",
+            "!bg-panel !text-ink !border-line !shadow-pop !rounded-lg !font-sans !text-sm !gap-2.5 !px-4 !py-3",
+          description: "!text-ink-2",
+          error: "[&_[data-icon]]:!text-danger-text",
+          success: "[&_[data-icon]]:!text-live-text",
         },
       }}
     />
@@ -32,7 +32,7 @@ function ThemedToaster() {
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const tree = (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
       <IconContext.Provider value={{ size: 16, weight: "regular" }}>
         <SWRConfig
           value={{

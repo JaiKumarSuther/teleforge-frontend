@@ -2,8 +2,15 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Lockup } from "@/components/brand/logo";
-import { Sparkle, Lightning, Clock, ChatCenteredDots } from "@phosphor-icons/react";
+import { Sparkle, Lightning, Clock, ChatCenteredDots, Checks, Code, Barbell, ForkKnife, ShoppingBag } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
+
+const PERSONA_ICON: Record<string, typeof Code> = { support: ShoppingBag, coach: Barbell, mentor: Code, host: ForkKnife };
+
+function PersonaIcon({ id }: { id: string }) {
+  const Icon = PERSONA_ICON[id] ?? Sparkle;
+  return <Icon aria-hidden size={14} />;
+}
 
 interface PersonaDemo {
   id: string;
@@ -20,7 +27,7 @@ const PERSONAS: PersonaDemo[] = [
     id: "support",
     name: "Threadline Support",
     role: "E-Commerce",
-    badge: "🛍️ Customer Care",
+    badge: "Customer Care",
     prompt:
       "You are Threadline Support. Be polite, friendly, and give clear answers on shipping, sizes, and returns.",
     userMessage: "Do you ship to Karachi?",
@@ -31,7 +38,7 @@ const PERSONAS: PersonaDemo[] = [
     id: "coach",
     name: "Apex Coach",
     role: "Fitness",
-    badge: "💪 Fitness Coach",
+    badge: "Fitness Coach",
     prompt:
       "You are Apex Coach. Give high-energy, encouraging fitness tips and quick form corrections for beginners.",
     userMessage: "My lower back feels tight on deadlifts, what should I check?",
@@ -42,7 +49,7 @@ const PERSONAS: PersonaDemo[] = [
     id: "mentor",
     name: "ByteMentor",
     role: "Education",
-    badge: "💻 Coding Tutor",
+    badge: "Coding Tutor",
     prompt:
       "You are ByteMentor. Break down tricky programming concepts into intuitive everyday metaphors.",
     userMessage: "What's the difference between SQL and NoSQL?",
@@ -53,7 +60,7 @@ const PERSONAS: PersonaDemo[] = [
     id: "host",
     name: "Velvet Host",
     role: "Hospitality",
-    badge: "🍽️ Dining Host",
+    badge: "Dining Host",
     prompt:
       "You are the head host at Bistro Velvet. Greet guests warmly with European charm and suggest wine pairings.",
     userMessage: "Do you have tables for two tonight around 8 PM?",
@@ -190,12 +197,13 @@ export function AuthTypewriter() {
                 setPersonaIndex(idx);
               }}
               className={cn(
-                "rounded-full border px-3 py-1 text-xs font-medium transition-all duration-150 cursor-pointer",
+                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-all duration-150 cursor-pointer",
                 personaIndex === idx
                   ? "border-accent bg-accent text-on-accent shadow-xs ring-2 ring-accent/30"
                   : "border-line-2 bg-surface text-text-2 hover:bg-bg-hover hover:text-text"
               )}
             >
+              <PersonaIcon id={p.id} />
               {p.badge}
             </button>
           ))}
@@ -300,12 +308,12 @@ export function AuthTypewriter() {
                         className="invisible pointer-events-none select-none col-start-1 row-start-1"
                       >
                         <p>{p.userMessage}</p>
-                        <span className="mt-0.5 block text-right text-[9px] text-text-3">11:19 PM ✓✓</span>
+                        <span className="mt-0.5 block text-right text-[9px] text-text-3">11:19 PM <Checks aria-hidden className="ml-0.5 inline size-3 align-[-2px]" /></span>
                       </div>
                     ))}
                     <div className="col-start-1 row-start-1">
                       <p>{active.userMessage}</p>
-                      <span className="mt-0.5 block text-right text-[9px] text-text-3">11:19 PM ✓✓</span>
+                      <span className="mt-0.5 block text-right text-[9px] text-text-3">11:19 PM <Checks aria-hidden className="ml-0.5 inline size-3 align-[-2px]" /></span>
                     </div>
                   </div>
                 </div>

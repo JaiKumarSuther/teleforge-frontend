@@ -6,11 +6,11 @@ import { cn } from "@/lib/utils";
 
 /** Shared text-field look: 3:1 edge, inset focus outline (never a border change), 16px text on phones so iOS doesn't zoom. */
 export const fieldClass =
-  "block w-full rounded-md border border-line-input bg-surface px-3 text-md text-text placeholder:text-placeholder sm:text-sm " +
-  "transition-[border-color] duration-150 hover:border-text-2 " +
+  "block w-full rounded-md border border-line-input bg-panel px-3 text-md text-ink placeholder:text-placeholder sm:text-sm " +
+  "transition-[border-color] duration-150 hover:border-ink-2 " +
   "focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-focus " +
   "aria-[invalid=true]:border-danger aria-[invalid=true]:focus-visible:outline-danger " +
-  "disabled:cursor-not-allowed disabled:border-line-2 disabled:bg-bg-3 disabled:text-text-3";
+  "disabled:cursor-not-allowed disabled:border-line-strong disabled:bg-track disabled:text-ink-3";
 
 interface ShellProps {
   label: React.ReactNode;
@@ -28,14 +28,14 @@ export function FieldShell({ label, htmlFor, hint, error, aside, children, class
   return (
     <div className={cn("flex flex-col gap-2", className)}>
       <div className="flex min-h-5 items-baseline justify-between gap-3">
-        <label htmlFor={htmlFor} className="text-label font-medium text-text">
+        <label htmlFor={htmlFor} className="text-label font-medium text-ink">
           {label}
         </label>
         {aside}
       </div>
       {children}
       {(hint || error) && (
-        <div id={msgId} className={cn("min-h-4 text-label", error ? "text-danger-text" : "text-text-2")}>
+        <div id={msgId} className={cn("min-h-4 text-label", error ? "text-danger-text" : "text-ink-2")}>
           {error || hint}
         </div>
       )}
@@ -66,14 +66,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   return (
     <FieldShell label={label} htmlFor={inputId} hint={hint} error={error} aside={aside} className={wrapperClassName}>
       <div className="relative">
-        {leading && <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-text-3">{leading}</span>}
+        {leading && <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-ink-3">{leading}</span>}
         <input
           ref={ref}
           id={inputId}
           type={isPassword && reveal ? "text" : type}
           aria-invalid={error ? true : undefined}
           aria-describedby={hint || error ? `${inputId}-msg` : undefined}
-          className={cn(fieldClass, "h-10", code && "font-mono text-sm sm:text-label", leading && "pl-9", isPassword && "pr-11", className)}
+          className={cn(fieldClass, "h-10", code && "type-mono text-md sm:text-label", leading && "pl-9", isPassword && "pr-11", className)}
           {...props}
         />
         {isPassword && (
@@ -82,7 +82,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
             onClick={() => setReveal((r) => !r)}
             aria-label={reveal ? "Hide" : "Show"}
             aria-pressed={reveal}
-            className="absolute top-1/2 right-1 flex size-8 -translate-y-1/2 items-center justify-center rounded-sm text-text-2 hover:bg-bg-hover hover:text-text"
+            className="absolute top-1/2 right-1 flex size-8 -translate-y-1/2 items-center justify-center rounded-sm text-ink-2 hover:bg-hover hover:text-ink"
           >
             {reveal ? <EyeSlash /> : <Eye />}
           </button>
@@ -110,7 +110,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
   const over = max !== undefined && length > max;
   const counter =
     max !== undefined ? (
-      <span className={cn("text-label", over ? "text-danger-text" : "text-text-2")} aria-live="polite">
+      <span className={cn("text-label", over ? "text-danger-text" : "text-ink-2")} aria-live="polite">
         {length.toLocaleString()} / {max.toLocaleString()}
       </span>
     ) : null;
