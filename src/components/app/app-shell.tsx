@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
+import { useAnimatedTheme } from "@/lib/use-animated-theme";
 import { CaretUpDown, Desktop, Gear, MagnifyingGlass, Moon, Plus, SignOut, SquaresFour, Sun } from "@phosphor-icons/react";
 import { Mark } from "@/components/brand/logo";
 import { Menu, type MenuEntry } from "@/components/ui/menu";
@@ -75,7 +75,7 @@ function ScopeSwitcher() {
 
 function AccountMenu() {
   const { user, signOut } = useAuth();
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme } = useAnimatedTheme();
   const items: MenuEntry[] = [
     {
       type: "label",

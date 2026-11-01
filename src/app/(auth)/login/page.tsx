@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/field";
 import { GoogleSignIn } from "@/components/auth/google-button";
@@ -40,6 +41,11 @@ export default function LoginPage() {
       await signIn(result);
       router.replace(nextPath());
     } catch (err) {
+      if (err instanceof ApiError && err.code === "EMAIL_NOT_VERIFIED") {
+        toast.error(err.display);
+        router.push(`/verify-email?email=${encodeURIComponent(email.trim())}`);
+        return;
+      }
       setErrors({ form: err instanceof ApiError ? err.display : "Couldn't sign you in. Check your connection and try again." });
       passwordRef.current?.select();
     } finally {

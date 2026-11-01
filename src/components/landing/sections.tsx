@@ -319,7 +319,7 @@ const EVENTS = [
     id: "generateContent",
     icon: <Sparkle size={16} weight="fill" className="text-amber-500" />,
     title: "Gemini writes the reply",
-    body: "Your bot persona prompt, the recent conversation history, and the new message are sent to Google Gemini 2.5 Flash with safety filters active.",
+    body: "Your bot persona prompt, the recent conversation history, and the new message are sent to Google Gemini 3.8 Flash with safety filters active.",
   },
   {
     step: "4",

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Command } from "cmdk";
-import { useTheme } from "next-themes";
+import { useAnimatedTheme } from "@/lib/use-animated-theme";
 import { toast } from "sonner";
 import {
   ArrowSquareOut,
@@ -45,7 +45,7 @@ export function CommandMenu() {
   const returnTo = useRef<HTMLElement | null>(null);
   const router = useRouter();
   const pathname = usePathname();
-  const { setTheme } = useTheme();
+  const { setTheme } = useAnimatedTheme();
   const { signOut } = useAuth();
   const { data } = useBots();
   const bots = data?.data ?? [];

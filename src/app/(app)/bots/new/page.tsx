@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Key, LockSimple } from "@phosphor-icons/react";
+import { CheckCircle, Check, Key, LockSimple } from "@phosphor-icons/react";
 import { toast } from "sonner";
 import { useSWRConfig } from "swr";
 import { Button, ButtonLink } from "@/components/ui/button";
@@ -27,14 +27,47 @@ function mapServerError(err: ApiError): Errors {
   return { form: msg };
 }
 
-function Section({ title, description, children }: { title: string; description: React.ReactNode; children: React.ReactNode }) {
+/** One numbered step. The badge turns into a check once the step is filled in; a rail links it to the next step. */
+function Step({
+  n,
+  title,
+  description,
+  done,
+  last,
+  children,
+}: {
+  n: number;
+  title: string;
+  description: React.ReactNode;
+  done: boolean;
+  last?: boolean;
+  children: React.ReactNode;
+}) {
   return (
-    <section className="space-y-5 border-t border-line pt-8 first:border-t-0 first:pt-0">
-      <div>
-        <h2 className="type-title text-text">{title}</h2>
-        <p className="mt-1 max-w-[60ch] text-sm text-text-2">{description}</p>
+    <section aria-labelledby={`step-${n}`} className="grid grid-cols-[2rem_minmax(0,1fr)] gap-x-4">
+      <div className="flex flex-col items-center">
+        <span
+          aria-hidden
+          className={cn(
+            "flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-medium transition-colors duration-150",
+            done ? "bg-ok-tint text-ok-text ring-1 ring-ok-line ring-inset" : "bg-text text-bg",
+          )}
+        >
+          {done ? <Check weight="bold" size={16} /> : n}
+        </span>
+        {!last && <span aria-hidden className="mt-2 w-px flex-1 bg-line-2" />}
       </div>
-      {children}
+      <div className={cn("min-w-0 space-y-5", !last && "pb-10")}>
+        <div className="pt-1">
+          <h2 id={`step-${n}`} className="type-title text-text">
+            <span className="sr-only">Step {n}: </span>
+            {title}
+            {done && <span className="sr-only"> (done)</span>}
+          </h2>
+          <p className="mt-1 max-w-[60ch] text-sm text-text-2">{description}</p>
+        </div>
+        {children}
+      </div>
     </section>
   );
 }
@@ -59,6 +92,8 @@ export default function NewBotPage() {
   }, []);
 
   const template = PERSONA_TEMPLATES.find((t) => t.id === templateId);
+  const connectDone = name.trim().length > 0 && TOKEN_PATTERN.test(token.trim());
+  const personaDone = persona.trim().length > 0 && persona.length <= 2000;
   const tokenLooksOff = token.trim().length > 8 && !TOKEN_PATTERN.test(token.trim());
 
   function applyTemplate(id: string) {
@@ -129,11 +164,11 @@ export default function NewBotPage() {
 
   return (
     <div className="space-y-8">
-      <PageHeader title="New bot" description="Connect a bot you made with BotFather, then describe how it should talk. You can test the persona before saving." />
+      <PageHeader title="New bot" description="Two steps: connect a bot you made with BotFather, then describe how it should talk. You can test the persona before saving." />
 
       <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-10">
-        <form ref={formRef} onSubmit={onSubmit} noValidate className="space-y-8">
-          <Section title="Telegram bot" description="The token lets TeleForge read and send messages as your bot. It's checked with Telegram when you save.">
+        <form ref={formRef} onSubmit={onSubmit} noValidate>
+          <Step n={1} title="Connect Telegram" done={connectDone} description="The token lets TeleForge read and send messages as your bot. It's checked with Telegram when you save.">
             <Input
               name="name"
               label="Name"
@@ -184,17 +219,17 @@ export default function NewBotPage() {
               />
               <TokenHelp id={helpId} open={showHelp} />
             </div>
-          </Section>
+          </Step>
 
-          <Section title="Persona" description="Tone, what the bot helps with, and what it must never do. Plain sentences work best.">
+          <Step n={2} last title="Write the persona" done={personaDone} description="Tone, what the bot helps with, and what it must never do. Plain sentences work best. Test it on the right as you write.">
             <fieldset>
               <legend className="mb-2 text-label font-medium text-text">Start from a template</legend>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {PERSONA_TEMPLATES.map((t) => (
                   <label
                     key={t.id}
                     className={cn(
-                      "relative flex cursor-pointer flex-col rounded-md bg-surface px-3.5 py-3 shadow-1 transition-[box-shadow,background-color] duration-150 hover:shadow-2",
+                      "relative flex cursor-pointer flex-col rounded-lg bg-surface px-4 py-3.5 pr-10 shadow-1 transition-[box-shadow,background-color] duration-150 hover:shadow-2",
                       "has-[:checked]:bg-accent-tint has-[:checked]:shadow-none has-[:checked]:ring-2 has-[:checked]:ring-accent",
                       "has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus",
                     )}
@@ -202,6 +237,7 @@ export default function NewBotPage() {
                     <input type="radio" name="template" value={t.id} checked={templateId === t.id} onChange={() => applyTemplate(t.id)} className="sr-only" />
                     <span className="text-sm font-medium text-text">{t.label}</span>
                     <span className="mt-0.5 text-label text-text-2">{t.blurb}</span>
+                    {templateId === t.id && <CheckCircle aria-hidden weight="fill" size={20} className="absolute top-3.5 right-3.5 text-accent-text" />}
                   </label>
                 ))}
               </div>
@@ -220,15 +256,15 @@ export default function NewBotPage() {
               }}
               error={errors.persona}
             />
-          </Section>
+          </Step>
 
           {errors.form && (
-            <p role="alert" className="rounded-md bg-danger-tint px-4 py-3 text-sm text-danger-text ring-1 ring-danger-line ring-inset">
+            <p role="alert" className="mt-6 rounded-md bg-danger-tint px-4 py-3 text-sm text-danger-text ring-1 ring-danger-line ring-inset">
               {errors.form}
             </p>
           )}
 
-          <div className="flex flex-col-reverse gap-3 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-8 flex flex-col-reverse gap-3 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-label text-text-2">The bot is saved as a draft. Nothing replies on Telegram until you start it.</p>
             <div className="flex gap-2">
               <ButtonLink href="/dashboard" variant="ghost" className="hidden sm:inline-flex">
@@ -241,7 +277,7 @@ export default function NewBotPage() {
           </div>
         </form>
 
-        <aside aria-label="Test the persona" className="lg:sticky lg:top-36">
+        <aside aria-label="Test the persona" className="lg:sticky lg:top-36 lg:pt-1">
           <PersonaPlayground personaPrompt={persona} botName={name} suggestion={template?.sample ?? "Hi, what can you help me with?"} />
           <p className="mt-3 text-label text-text-2">Test messages count toward your Gemini quota, the same as real ones.</p>
         </aside>

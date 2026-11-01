@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/field";
 import { GoogleSignIn } from "@/components/auth/google-button";
 import { api, ApiError } from "@/lib/api";
-import { useAuth } from "@/lib/auth";
 import { useRedirectIfAuthed } from "@/lib/use-redirect-if-authed";
 import { cn } from "@/lib/utils";
 
@@ -21,7 +20,6 @@ function passwordHint(pw: string): { text: string; tone: "plain" | "warn" | "ok"
 
 export default function SignupPage() {
   const router = useRouter();
-  const { signIn } = useAuth();
   useRedirectIfAuthed();
 
   const [name, setName] = useState("");
@@ -51,8 +49,7 @@ export default function SignupPage() {
     setLoading(true);
     try {
       const result = await api.auth.register({ name: name.trim(), email: email.trim(), password });
-      await signIn(result);
-      router.replace("/dashboard");
+      router.replace(`/verify-email?email=${encodeURIComponent(result.email)}`);
     } catch (err) {
       const msg = err instanceof ApiError ? err.display : "Couldn't create your account. Check your connection and try again.";
       setErrors(/email/i.test(msg) ? { email: msg } : { form: msg });

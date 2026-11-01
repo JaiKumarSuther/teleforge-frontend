@@ -4,10 +4,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowSquareOut, CaretLeft } from "@phosphor-icons/react";
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState, Panel, Skeleton } from "@/components/ui/misc";
-import { ChatBubble, DayDivider } from "@/components/app/chat";
+import { ChatBubble, DayDivider, dayKey, dayLabel } from "@/components/app/chat";
 import { useBotActivity } from "@/lib/hooks";
 import type { Activity, BotStatus } from "@/lib/types";
-import { cn, formatClock, initials, timeAgo } from "@/lib/utils";
+import { cn, formatClock, formatNumber, timeAgo } from "@/lib/utils";
 
 interface Thread {
   chatId: number;
@@ -33,14 +33,6 @@ function buildThreads(activities: Activity[]): Thread[] {
   return [...map.values()].map((t) => ({ ...t, name: t.name || `Chat ${t.chatId}`, items: [...t.items].reverse() }));
 }
 
-const dayKey = (iso: string) => new Date(iso).toDateString();
-function dayLabel(iso: string) {
-  const d = new Date(iso);
-  if (d.toDateString() === new Date().toDateString()) return "Today";
-  if (d.toDateString() === new Date(Date.now() - 86400000).toDateString()) return "Yesterday";
-  return d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
-}
-
 export function Conversations({ botId, live, status, username }: { botId: string; live: boolean; status: BotStatus; username: string | null }) {
   const { data, isLoading } = useBotActivity(botId, { types: "message_in,message_out", limit: 80, live });
   const threads = useMemo(() => buildThreads(data?.data ?? []), [data]);
@@ -57,7 +49,7 @@ export function Conversations({ botId, live, status, username }: { botId: string
 
   if (isLoading && !data) {
     return (
-      <Panel className="grid grid-cols-[minmax(0,1fr)] h-[480px] overflow-hidden md:grid-cols-[17.5rem_minmax(0,1fr)]" aria-busy="true" aria-label="Loading conversations">
+      <Panel className="grid grid-cols-[minmax(0,1fr)] h-[480px] overflow-hidden md:grid-cols-[20rem_minmax(0,1fr)]" aria-busy="true" aria-label="Loading conversations">
         <div className="space-y-4 border-line p-4 md:border-r">
           {[0, 1, 2].map((i) => (
             <div key={i} className="flex gap-3">
@@ -78,28 +70,28 @@ export function Conversations({ botId, live, status, username }: { botId: string
     return (
       <Panel>
         <EmptyState
-          title="No conversations yet"
+          title="No chats yet"
           action={
-            live && username ? (
+            username ? (
               <ButtonLink href={`https://t.me/${username}`} variant="secondary" className="max-w-full">
                 <ArrowSquareOut className="shrink-0" />
-                <span className="truncate">Message @{username}</span>
+                <span className="truncate">Open in Telegram</span>
               </ButtonLink>
             ) : undefined
           }
         >
           {live
-            ? "The bot is listening. Send it a message on Telegram and the conversation appears here within about ten seconds."
+            ? "The bot is listening. Send it a message on Telegram and the chat appears here within about ten seconds."
             : status === "error"
-              ? "This bot stopped because of the error above, so it isn't receiving messages. Once it runs again, its conversations appear here."
-              : "Start the bot, then send it a message on Telegram. Conversations from the last 30 days appear here."}
+              ? "This bot stopped because of the error above, so it isn't receiving messages. Once it runs again, its chats appear here."
+              : "Start the bot, then send it a message on Telegram. Chats from the last 30 days appear here."}
         </EmptyState>
       </Panel>
     );
   }
 
   return (
-    <Panel ref={panelRef} className="grid grid-cols-[minmax(0,1fr)] h-[min(70dvh,600px)] min-h-[440px] overflow-hidden md:grid-cols-[17.5rem_minmax(0,1fr)]">
+    <Panel ref={panelRef} className="grid grid-cols-[minmax(0,1fr)] h-[min(70dvh,600px)] min-h-[440px] overflow-hidden md:grid-cols-[20rem_minmax(0,1fr)]">
       {/* Chat list */}
       <div className={cn("flex min-h-0 flex-col border-line md:flex md:border-r", showThread && "hidden")}>
         <div className="flex h-12 shrink-0 items-center justify-between border-b border-line px-4">
@@ -125,15 +117,22 @@ export function Conversations({ botId, live, status, username }: { botId: string
                     isActive ? "md:bg-bg-active" : "hover:bg-bg-hover",
                   )}
                 >
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-bg-3 text-label font-medium text-text-2">{initials(t.name)}</span>
+                  <span aria-hidden className="flex size-10 shrink-0 items-center justify-center rounded-full bg-bg-3 text-sm font-medium text-text-2">
+                    {t.name.trim().charAt(0).toUpperCase() || "?"}
+                  </span>
                   <span className="min-w-0 flex-1">
                     <span className="flex items-baseline justify-between gap-2">
                       <span className="truncate text-sm font-medium text-text">{t.name}</span>
                       <span className="shrink-0 text-caption text-text-2">{timeAgo(t.last.createdAt)}</span>
                     </span>
-                    <span className="mt-0.5 block truncate text-label text-text-2">
-                      {t.last.type === "message_out" && "Bot: "}
-                      {t.last.meta?.text}
+                    <span className="mt-0.5 flex items-center justify-between gap-2">
+                      <span className="truncate text-label text-text-2">
+                        {t.last.type === "message_out" && "Bot: "}
+                        {t.last.meta?.text}
+                      </span>
+                      <span className="shrink-0 rounded-full bg-bg-3 px-1.5 text-caption text-text-2" aria-label={`${t.items.length} messages`}>
+                        {formatNumber(t.items.length)}
+                      </span>
                     </span>
                   </span>
                 </button>
@@ -163,18 +162,38 @@ export function Conversations({ botId, live, status, username }: { botId: string
                 {active.items.length} {active.items.length === 1 ? "message" : "messages"}
               </span>
             </div>
-            <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-chat-bg px-3 py-3 sm:px-5" aria-live="polite" aria-label={`Conversation with ${active.name}`}>
+            <div
+              ref={scrollRef}
+              tabIndex={0}
+              role="log"
+              className="group/thread min-h-0 flex-1 overflow-y-auto overscroll-contain bg-chat-bg px-3 py-3 sm:px-5"
+              aria-live="polite"
+              aria-label={`Conversation with ${active.name}. Focus to show message times.`}
+            >
               <div className="flex min-h-full flex-col justify-end gap-1.5">
                 {active.items.map((m, i) => (
                   <div key={m._id}>
                     {(i === 0 || dayKey(active.items[i - 1].createdAt) !== dayKey(m.createdAt)) && <DayDivider>{dayLabel(m.createdAt)}</DayDivider>}
-                    <ChatBubble side={m.type === "message_in" ? "in" : "out"} time={formatClock(m.createdAt)}>
+                    <ChatBubble side={m.type === "message_in" ? "in" : "out"} time={formatClock(m.createdAt)} revealTime>
                       {m.meta?.text}
                     </ChatBubble>
                   </div>
                 ))}
               </div>
             </div>
+            <p className="flex h-10 shrink-0 items-center gap-2 border-t border-line px-4 text-label text-text-2">
+              {live ? (
+                <>
+                  <span aria-hidden className="size-2 shrink-0 rounded-full bg-ok" />
+                  Bot is running, new messages appear automatically
+                </>
+              ) : (
+                <>
+                  <span aria-hidden className="size-2 shrink-0 rounded-full bg-text-3" />
+                  Bot isn&apos;t running, so no new messages arrive
+                </>
+              )}
+            </p>
           </>
         )}
       </div>

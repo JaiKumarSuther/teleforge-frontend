@@ -17,7 +17,7 @@ export function Hero() {
         {/* Top badge */}
         <div className="inline-flex items-center gap-2 rounded-full border border-line-2 bg-surface/80 px-3.5 py-1 text-xs font-medium text-text-2 shadow-xs backdrop-blur-md">
           <span className="size-2 rounded-full bg-ok animate-pulse" />
-          <span>Powered by Google Gemini 2.5 Flash</span>
+          <span>Powered by Google Gemini 3.8 Flash</span>
           <span className="text-text-3 font-normal">|</span>
           <span className="font-semibold text-accent">Zero Server Setup</span>
         </div>

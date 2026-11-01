@@ -20,6 +20,21 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
+/** A titled group: heading and explanation beside (or above) the cards it holds. */
+function Group({ id, title, description, children }: { id: string; title: string; description: string; children: React.ReactNode }) {
+  return (
+    <section aria-labelledby={id} className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8">
+      <div>
+        <h2 id={id} className="text-md font-medium text-text">
+          {title}
+        </h2>
+        <p className="mt-1 text-sm text-text-2">{description}</p>
+      </div>
+      <div className="min-w-0 space-y-4">{children}</div>
+    </section>
+  );
+}
+
 export default function BotSettingsPage() {
   const { bot, refreshAll, mutateBot } = useBotContext();
   useBotTitle("Settings");
@@ -70,59 +85,59 @@ export default function BotSettingsPage() {
   const username = bot.telegramBotInfo.username;
 
   return (
-    <div className="space-y-6">
-      <SettingsCard
-        as="form"
-        onSubmit={rename}
-        noValidate
-        title="Name"
-        description="Only used inside TeleForge. People on Telegram see the display name you set in BotFather."
-        note="Up to 60 characters."
-        action={
-          <Button type="submit" size="sm" loading={saving}>
-            Save name
-          </Button>
-        }
-      >
-        <Input label="Bot name" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} error={nameError} autoComplete="off" />
-      </SettingsCard>
+    <div className="space-y-10">
+      <Group id="settings-general" title="General" description="How this bot appears inside TeleForge.">
+        <SettingsCard
+          as="form"
+          onSubmit={rename}
+          noValidate
+          title="Name"
+          description="Only used inside TeleForge. People on Telegram see the display name you set in BotFather."
+          note="Up to 60 characters."
+          action={
+            <Button type="submit" size="sm" loading={saving}>
+              Save name
+            </Button>
+          }
+        >
+          <Input label="Bot name" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} error={nameError} autoComplete="off" />
+        </SettingsCard>
+      </Group>
 
-      <SettingsCard
-        title="Telegram"
-        description="The account this bot answers as. TeleForge checked the token with Telegram when you created the bot."
-        note="To use a different token, create a new bot and delete this one."
-      >
-        <dl className="divide-y divide-line border-y border-line">
-          <Row label="Username">
-            {username ? (
-              <a className="text-accent-text underline-offset-2 hover:underline" href={`https://t.me/${username}`} target="_blank" rel="noreferrer">
-                @{username}
-              </a>
-            ) : (
-              "Not set"
-            )}
-          </Row>
-          <Row label="Bot ID">
-            <span className="font-mono text-label">{bot.telegramBotInfo.id ?? "Unknown"}</span>
-          </Row>
-          <Row label="Token">Stored encrypted with AES&#8209;256&#8209;GCM and never shown again.</Row>
-          <Row label="Created">
-            {new Date(bot.createdAt).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}
-          </Row>
-        </dl>
-      </SettingsCard>
+      <Group id="settings-telegram" title="Telegram connection" description="The Telegram account this bot answers as. TeleForge checked the token with Telegram when you created the bot.">
+        <SettingsCard title="Connection details" description="These come from Telegram and can't be edited here." note="To use a different token, create a new bot and delete this one.">
+          <dl className="divide-y divide-line border-y border-line">
+            <Row label="Username">
+              {username ? (
+                <a className="text-accent-text underline-offset-2 hover:underline" href={`https://t.me/${username}`} target="_blank" rel="noreferrer">
+                  @{username}
+                </a>
+              ) : (
+                "Not set"
+              )}
+            </Row>
+            <Row label="Bot ID">
+              <span className="font-mono text-label">{bot.telegramBotInfo.id ?? "Unknown"}</span>
+            </Row>
+            <Row label="Token">Stored encrypted with AES&#8209;256&#8209;GCM and never shown again.</Row>
+            <Row label="Created">{new Date(bot.createdAt).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}</Row>
+          </dl>
+        </SettingsCard>
+      </Group>
 
-      <SettingsCard
-        danger
-        title="Delete bot"
-        description="Stops the bot, then permanently deletes its persona, settings and 30 days of activity. Your bot stays in BotFather, so you can connect it again later."
-        note="This can't be undone."
-        action={
-          <Button variant="danger" size="sm" onClick={() => setDeleteOpen(true)}>
-            Delete bot…
-          </Button>
-        }
-      />
+      <Group id="settings-danger" title="Danger zone" description="Actions here can't be undone. You'll be asked to confirm.">
+        <SettingsCard
+          danger
+          title="Delete bot"
+          description="Stops the bot, then permanently deletes its persona, settings and 30 days of activity. Your bot stays in BotFather, so you can connect it again later."
+          note="This can't be undone."
+          action={
+            <Button variant="danger" size="sm" onClick={() => setDeleteOpen(true)}>
+              Delete bot…
+            </Button>
+          }
+        />
+      </Group>
 
       <Dialog
         open={deleteOpen}

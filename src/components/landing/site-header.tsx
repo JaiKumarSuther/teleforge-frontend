@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useState } from "react";
 import { List, X, Moon, Sun } from "@phosphor-icons/react";
-import { useTheme } from "next-themes";
+import { useAnimatedTheme } from "@/lib/use-animated-theme";
 import { Lockup } from "@/components/brand/logo";
 import { HeaderNavAuth, MobileMenuAuth } from "./auth-cta";
 import { cn } from "@/lib/utils";
@@ -16,7 +16,7 @@ const LINKS = [
 ];
 
 function ThemeToggle() {
-  const { resolvedTheme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useAnimatedTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

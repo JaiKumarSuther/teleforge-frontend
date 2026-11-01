@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { useTheme } from "next-themes";
+import { useAnimatedTheme } from "@/lib/use-animated-theme";
 import { Desktop, Moon, Sun } from "@phosphor-icons/react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,7 @@ function HealthRow({ label, ok, value }: { label: string; ok: boolean | null; va
 }
 
 function ThemeChoice() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme } = useAnimatedTheme();
   const mounted = useSyncExternalStore(subscribe, () => true, () => false);
   const current = mounted ? theme ?? "system" : null;
   const options = [

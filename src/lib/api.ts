@@ -44,11 +44,14 @@ export const tokenStore = {
 export class ApiError extends Error {
   status: number;
   errors?: string[];
-  constructor(message: string, status: number, errors?: string[]) {
+  /** Machine-readable code from the API, e.g. "EMAIL_NOT_VERIFIED". */
+  code?: string;
+  constructor(message: string, status: number, errors?: string[], code?: string) {
     super(message);
     this.name = "ApiError";
     this.status = status;
     this.errors = errors;
+    this.code = code;
   }
   /** The most specific message to show a user: first field error if present, else the message. */
   get display(): string {
@@ -102,7 +105,7 @@ async function request<T>(path: string, { method = "GET", body, auth = true, sig
     throw new ApiError("Can't reach the TeleForge server. Check your connection and that the API is running.", 0);
   }
 
-  let json: { success?: boolean; message?: string; data?: unknown; pagination?: unknown; errors?: string[] } | null = null;
+  let json: { success?: boolean; message?: string; data?: unknown; pagination?: unknown; errors?: string[]; code?: string } | null = null;
   try {
     json = await res.json();
   } catch {
@@ -111,7 +114,7 @@ async function request<T>(path: string, { method = "GET", body, auth = true, sig
 
   if (!res.ok || json?.success === false) {
     if (res.status === 401 && auth && onUnauthorized) onUnauthorized();
-    throw new ApiError(json?.message || `Request failed (${res.status})`, res.status, json?.errors);
+    throw new ApiError(json?.message || `Request failed (${res.status})`, res.status, json?.errors, json?.code);
   }
 
   return json as T;
@@ -137,7 +140,10 @@ const qs = (params: Record<string, string | number | undefined | null>) => {
 export const api = {
   auth: {
     register: (body: { name: string; email: string; password: string }) =>
-      unwrap(request<Envelope<AuthResult>>("/api/auth/register", { method: "POST", body, auth: false })),
+      unwrap(request<Envelope<{ pendingVerification: true; email: string }>>("/api/auth/register", { method: "POST", body, auth: false })),
+    verifyEmail: (body: { email: string; code: string }) =>
+      unwrap(request<Envelope<AuthResult>>("/api/auth/verify-email", { method: "POST", body, auth: false })),
+    resendOtp: (body: { email: string }) => request<Envelope<null>>("/api/auth/resend-otp", { method: "POST", body, auth: false }),
     login: (body: { email: string; password: string }) =>
       unwrap(request<Envelope<AuthResult>>("/api/auth/login", { method: "POST", body, auth: false })),
     google: (idToken: string) =>

@@ -413,5 +413,14 @@ html:has(dialog.tf-dialog[open]) {
   .typing-dot { animation: typing 1.2s ease-in-out infinite both; }
 }
 
+/* Theme switch: both snapshots are driven from lib/use-animated-theme.ts (circular reveal), so drop the default crossfade */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) { z-index: 2; }
+
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }

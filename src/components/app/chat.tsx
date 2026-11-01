@@ -6,6 +6,7 @@ export function ChatBubble({
   children,
   name,
   time,
+  revealTime,
   compact,
   className,
 }: {
@@ -13,12 +14,17 @@ export function ChatBubble({
   children: React.ReactNode;
   name?: string | null;
   time?: string;
+  /**
+   * Show the time only on hover, or while the enclosing `group/thread` element has focus.
+   * Touch devices (no hover) always show it. The slot is reserved, so nothing shifts.
+   */
+  revealTime?: boolean;
   /** Smaller type and padding, for illustrations */
   compact?: boolean;
   className?: string;
 }) {
   return (
-    <div className={cn("flex", side === "out" ? "justify-end" : "justify-start", className)}>
+    <div className={cn("group/bubble flex", side === "out" ? "justify-end" : "justify-start", className)}>
       <div
         className={cn(
           "max-w-[min(85%,34rem)] rounded-xl text-text shadow-[0_1px_0_oklch(0.25_0.02_250/0.08)]",
@@ -30,7 +36,13 @@ export function ChatBubble({
         <p className="whitespace-pre-wrap [overflow-wrap:anywhere]">
           {children}
           {time && (
-            <time className="float-right mt-1.5 ml-3 text-caption text-text-2" aria-label={`sent at ${time}`}>
+            <time
+              className={cn(
+                "float-right mt-1.5 ml-3 text-caption text-text-2 transition-opacity duration-150",
+                revealTime && "[@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover/bubble:opacity-100 [@media(hover:hover)]:group-focus-within/thread:opacity-100",
+              )}
+              aria-label={`sent at ${time}`}
+            >
               {time}
             </time>
           )}
@@ -38,6 +50,15 @@ export function ChatBubble({
       </div>
     </div>
   );
+}
+
+export const dayKey = (iso: string) => new Date(iso).toDateString();
+
+export function dayLabel(iso: string) {
+  const d = new Date(iso);
+  if (d.toDateString() === new Date().toDateString()) return "Today";
+  if (d.toDateString() === new Date(Date.now() - 86400000).toDateString()) return "Yesterday";
+  return d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
 }
 
 export function DayDivider({ children }: { children: React.ReactNode }) {

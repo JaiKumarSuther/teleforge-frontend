@@ -79,7 +79,7 @@ export function HeroDemo() {
               </div>
               <div className="flex items-center gap-1.5 text-caption text-text-3">
                 <span className="size-1.5 rounded-full bg-ok" />
-                <span>answers with Google Gemini 2.5 Flash</span>
+                <span>answers with Google Gemini 3.8 Flash</span>
               </div>
             </div>
           </div>

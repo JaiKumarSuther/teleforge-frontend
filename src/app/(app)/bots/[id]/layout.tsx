@@ -10,11 +10,11 @@ import { BotContext } from "@/components/app/bot-context";
 import { useToggleBot } from "@/components/app/bot-list";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Menu } from "@/components/ui/menu";
-import { BotAvatar, Callout, Skeleton, StatStrip, StatusBadge } from "@/components/ui/misc";
+import { BotAvatar, Callout, Skeleton, StatusBadge } from "@/components/ui/misc";
 import { ApiError } from "@/lib/api";
 import { useBot, useBotStats } from "@/lib/hooks";
 import type { BotStatus } from "@/lib/types";
-import { formatDuration, formatNumber, timeAgo } from "@/lib/utils";
+import { cn, formatDuration, formatNumber } from "@/lib/utils";
 
 /** Ticks every second from the server-reported uptime; remounted (via key) when new stats arrive. */
 function LiveUptime({ uptimeMs, running }: { uptimeMs: number; running: boolean }) {
@@ -25,14 +25,40 @@ function LiveUptime({ uptimeMs, running }: { uptimeMs: number; running: boolean 
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, [running]);
-  return <>{running && uptimeMs > 0 ? formatDuration(now - base) : "Not running"}</>;
+  if (!running) return null;
+  return <>{uptimeMs > 0 ? `Running for ${formatDuration(now - base)}` : "Just started"}</>;
+}
+
+/** Compact figures under the name. A value with `href` links to where its detail lives. */
+function InlineStats({ items }: { items: { label: string; value: string; href?: string; danger?: boolean }[] }) {
+  return (
+    <dl className="flex flex-wrap gap-x-6 gap-y-2">
+      {items.map((s) => {
+        const body = (
+          <>
+            <dd className={cn("text-md font-medium tabular-nums", s.danger ? "text-danger-text" : "text-text")}>{s.value}</dd>
+            <dt className={cn("text-label", s.href ? "text-text-2 underline decoration-line-2 underline-offset-2 group-hover:text-text" : "text-text-2")}>{s.label}</dt>
+          </>
+        );
+        return s.href ? (
+          <Link key={s.label} href={s.href} className="group flex items-baseline gap-1.5 rounded-xs">
+            {body}
+          </Link>
+        ) : (
+          <div key={s.label} className="flex items-baseline gap-1.5">
+            {body}
+          </div>
+        );
+      })}
+    </dl>
+  );
 }
 
 function HeaderSkeleton() {
   return (
     <div className="space-y-8" aria-busy="true" aria-label="Loading bot">
       <div className="flex items-center gap-4">
-        <Skeleton className="size-11 rounded-[10px]" />
+        <Skeleton className="size-14 rounded-[10px]" />
         <div className="space-y-2">
           <Skeleton className="h-6 w-48" />
           <Skeleton className="h-3.5 w-36" />
@@ -101,27 +127,65 @@ export default function BotLayout({ children }: { children: React.ReactNode }) {
       }}
     >
       <div className="space-y-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex min-w-0 items-center gap-4">
-            <BotAvatar name={bot.name} seed={bot._id} size={44} />
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex min-w-0 items-start gap-4">
+            <BotAvatar name={bot.name} seed={bot._id} size={56} />
             <div className="min-w-0">
               <h1 className="type-page truncate text-text">{bot.name}</h1>
-              <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-label">
+              <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-label">
                 <StatusBadge status={status} />
+                {live && (
+                  <>
+                    <span aria-hidden className="h-3 w-px bg-line-2" />
+                    <span className="text-text-2">
+                      <LiveUptime key={stats?.uptimeMs ?? 0} uptimeMs={stats?.uptimeMs ?? 0} running={live} />
+                    </span>
+                  </>
+                )}
                 <span aria-hidden className="h-3 w-px bg-line-2" />
                 {username ? (
-                  <a href={`https://t.me/${username}`} target="_blank" rel="noreferrer" className="text-text-2 underline-offset-2 hover:text-text hover:underline">
-                    @{username}
-                  </a>
+                  <span className="inline-flex items-center gap-0.5">
+                    <a href={`https://t.me/${username}`} target="_blank" rel="noreferrer" className="text-text-2 underline-offset-2 hover:text-text hover:underline">
+                      @{username}
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        navigator.clipboard
+                          ?.writeText(`@${username}`)
+                          .then(() => toast.success("Username copied"))
+                          .catch(() => toast.error("Couldn't copy. Select the username and copy it."))
+                      }
+                      aria-label={`Copy @${username}`}
+                      className="flex size-6 items-center justify-center rounded-sm text-text-2 hover:bg-bg-hover hover:text-text"
+                    >
+                      <Copy size={14} />
+                    </button>
+                  </span>
                 ) : (
                   <span className="text-text-2">No username</span>
                 )}
               </div>
+              <div className="mt-3">
+                <InlineStats
+                  items={[
+                    { label: "messages today", value: stats ? formatNumber(stats.messagesToday) : "–" },
+                    { label: "replies today", value: stats ? formatNumber(stats.repliesToday) : "–" },
+                    { label: "people, 24h", value: stats ? formatNumber(stats.activeUsers) : "–" },
+                    {
+                      label: "failed replies",
+                      value: stats ? formatNumber(stats.errorsToday) : "–",
+                      href: `/bots/${bot._id}/activity?type=errors`,
+                      danger: Boolean(stats?.errorsToday),
+                    },
+                  ]}
+                />
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 lg:shrink-0">
             {username && (
-              <ButtonLink href={`https://t.me/${username}`} variant="secondary" className="hidden lg:inline-flex">
+              <ButtonLink href={`https://t.me/${username}`} variant="secondary" className="hidden sm:inline-flex">
                 <ArrowSquareOut />
                 Open in Telegram
               </ButtonLink>
@@ -181,23 +245,6 @@ export default function BotLayout({ children }: { children: React.ReactNode }) {
             It won&apos;t reply on Telegram until you start it. Try the persona first in the Persona tab.
           </Callout>
         )}
-
-        <StatStrip
-          items={[
-            { label: "Messages today", value: stats ? formatNumber(stats.messagesToday) : "–", detail: stats ? `${formatNumber(stats.messages30d)} in 30 days` : " " },
-            {
-              label: "Replies today",
-              value: stats ? formatNumber(stats.repliesToday) : "–",
-              detail: stats ? (stats.errorsToday ? `${formatNumber(stats.errorsToday)} errors today` : "No errors today") : " ",
-            },
-            { label: "People, 24h", value: stats ? formatNumber(stats.activeUsers) : "–", detail: stats?.lastMessageAt ? `Last message ${timeAgo(stats.lastMessageAt)}` : "No messages yet" },
-            {
-              label: "Uptime",
-              value: <LiveUptime key={stats?.uptimeMs ?? 0} uptimeMs={stats?.uptimeMs ?? 0} running={live} />,
-              detail: live ? "Since it last started" : status === "draft" ? "Never started" : "Start the bot to run it",
-            },
-          ]}
-        />
 
         <div>{children}</div>
       </div>

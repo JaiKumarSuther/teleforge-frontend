@@ -118,7 +118,7 @@ export function PersonaSwitcher() {
           <div className="flex items-center gap-2 text-xs">
             <span className="inline-flex items-center gap-1 text-accent font-medium">
               <Sparkle size={13} weight="fill" />
-              <span>Gemini 2.5 Flash</span>
+              <span>Gemini 3.8 Flash</span>
             </span>
             <span className="text-text-3 font-mono">|</span>
             <span className="text-text-3 font-mono">{t.blurb}</span>
